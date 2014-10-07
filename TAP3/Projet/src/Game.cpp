@@ -7,7 +7,10 @@
 
 // Uncomment the following line to display more debugging information
 //#define DEBUG
-#include "Debug.h"
+#include "Debug.hpp"
+
+// Sorry, your file was missing dependendices:
+#include <string.h> // without this, compiler reports an error because strcpy() cannot be found.
 
 using namespace std;
 

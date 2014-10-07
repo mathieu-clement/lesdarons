@@ -1,3 +1,4 @@
+#pragma once
 #ifndef DEBUG
 #    define printDebugMsg(msg) ((void)0)
 #    define printDebugMsgEndl(msg) ((void)0)

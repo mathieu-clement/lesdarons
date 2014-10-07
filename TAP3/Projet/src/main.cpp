@@ -15,6 +15,7 @@ int main()
     cin >> gameType ;
     cout << endl;
 
+    /*
     Game* game;
     if(gameType==1)
         game = new Awele();
@@ -22,6 +23,8 @@ int main()
         game = new Nim();
     game->Run();
     delete game;
+    */
+
     return 0;
 }
 
