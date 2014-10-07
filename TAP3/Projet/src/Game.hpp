@@ -1,7 +1,8 @@
+#pragma once
 #ifndef GAME_HPP
 #define GAME_HPP
 
-#include "Player.h"
+#include "Player.hpp"
 
 typedef int Score;
 
