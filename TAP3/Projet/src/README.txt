@@ -5,7 +5,7 @@ From the src/ folder:
 
     cd build
     cmake ..
-    make        or      make CXX=clang++
+    make
 
 The executable is compiled with debug options.
 
