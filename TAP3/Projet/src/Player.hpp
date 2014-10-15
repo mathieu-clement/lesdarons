@@ -24,6 +24,12 @@ class Player {
         void Play(Game&);
         void SetName(char*);
         void SetPlayerNo(int);
+
+        friend std::ostream& operator<< (std::ostream&, Player const&);
+        friend std::ostream& operator<< (std::ostream&, Player*);
+    protected:
+        int m_playerNo;
+        std::string m_playerName;
 };
 
 #endif

@@ -16,12 +16,6 @@ void Nim::InitGame()
 
 }
 
-// run the game
-void Nim::Run()
-{
-
-}
-
 // clone the game, to be used for the min-max algorithms
 Game* Nim::Clone() const
 {
