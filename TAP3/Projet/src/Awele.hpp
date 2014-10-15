@@ -28,6 +28,12 @@ class Awele : public Game {
         // execute the move in the current game
         virtual moveStatus Move(const char * move);
 
+    private:
+        int board[12]; // 11 10 9  8  7  6  => 2nd player: seen as 5 4 3 2 1 0 from his side 
+                       // 0  1  2  3  4  5  => 1st player
+        int countSeeds(int playerId) const; // playerId 1 or 2
+
+
 };
 
 #endif

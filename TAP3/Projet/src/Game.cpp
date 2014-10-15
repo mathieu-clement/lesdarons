@@ -6,7 +6,7 @@
 #include "HumanPlayer.hpp"
 
 // Uncomment the following line to display more debugging information
-//#define DEBUG
+#define DEBUG
 #include "Debug.hpp"
 
 // Sorry, your file was missing dependendices:

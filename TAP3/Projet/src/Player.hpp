@@ -21,7 +21,7 @@ class Player {
         Player();
         Player(int);
 
-        void Play(Game&);
+        virtual void Play(Game&) const =0;
         void SetName(char*);
         void SetPlayerNo(int);
 

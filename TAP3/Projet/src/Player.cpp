@@ -12,10 +12,6 @@ Player::Player(int playerNo) : Player() {
     m_playerNo = playerNo;
 }
 
-void Player::Play(Game& game){
-
-}
-
 void Player::SetName(char* name){
     m_playerName.assign(name);
 }
