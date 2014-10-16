@@ -3,6 +3,7 @@ Compiling
 
 From the src/ folder:
 
+    mkdir build
     cd build
     cmake ..
     make
