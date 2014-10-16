@@ -19,7 +19,7 @@ class Player {
          */
 
         Player();
-        Player(int);
+        explicit Player(int);
 
         virtual void Play(Game&) const =0;
         void SetName(char*);
