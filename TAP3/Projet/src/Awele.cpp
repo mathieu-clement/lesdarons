@@ -37,37 +37,29 @@ char* Awele::GetNextMove(int moveIndex)
     return "";
 }
 
+void Awele::DisplayCellValue(int cellValue) const
+{
+        cout << "[";
+		if (cellValue > 0)
+            printf("%2d", cellValue);
+        else
+            cout << "  ";
+        cout << "] ";
+}
+
 // displays the board on the console
 void Awele::Display() const
 {
     // Prints something like this:
-    // [ 1] [ ]  [ 2] [  ] [ 4] [ 8]
-    // [  ] [ 2] [ 4] [  ] [10] [12]
+    // [ 1] [  ] [ 2] [  ] [ 4] [ 8] <= Player 1, cell 5 4 3 2 1 0      board[] : 11 10  9  8  7  6
+    // [  ] [ 2] [ 4] [  ] [10] [12] <= Player 0, cell 0 1 2 3 4 5                 0  1  2  3  4  5
     
     // top player (cells are reversed)
-    for (int cell = 11; cell >= 6; cell--) {
-        int cellValue = board[cell];
-        cout << "[";
-		if (cellValue > 0)
-            printf("%2d", cellValue);
-        else
-            cout << "  ";
-
-        cout << "] ";
-    }
+    for (int cell = 11; cell >= 6; cell--)  Awele::DisplayCellValue(board[cell]);
     cout << endl;
 
     // bottom player
-    for (int cell = 0; cell < 6; cell++) {
-        int cellValue = board[cell];
-        cout << "[";
-		if (cellValue > 0)
-            printf("%2d", cellValue);
-        else
-            cout << "  ";
-
-        cout << "] ";
-    }
+    for (int cell = 0; cell < 6; cell++)    Awele::DisplayCellValue(board[cell]);
     cout << endl;
 } // end Display()
 

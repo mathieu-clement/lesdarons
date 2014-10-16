@@ -33,6 +33,9 @@ class Awele : public Game {
                        // 0  1  2  3  4  5  => 1st player
         int countSeeds(int playerId) const; // playerId 1 or 2
 
+    protected:
+        void DisplayCellValue(int cellValue) const;
+
 
 };
 
