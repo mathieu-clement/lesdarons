@@ -8,11 +8,13 @@ using namespace std;
 
 Awele::Awele() : Game()
 {
+    board = new int[12];
 }
 
 Awele::~Awele()
 {
     this->Game::~Game();
+    delete[] board;
 }
 
 // init the game
@@ -26,15 +28,24 @@ void Awele::InitGame()
 // clone the game, to be used for the min-max algorithms
 Game* Awele::Clone() const
 {
-    // TODO
-    return new Awele();
+    Awele* game = new Awele();
+    for (int i = 0; i < 12; i++) {
+        game->board[i] = board[i];
+    }
+    for (int i=0; i < NB_OF_PLAYERS; i++) {
+        game->players[i] = players[i];
+        game->score[i] = score[i];
+    }
+    game->currentPlayerIndex = currentPlayerIndex;
+    return game;
 }
 
 // GetNextMove provides the next available move for the current game
-// GetNextMove will be called as an iterator for the min-max algortihm
+// GetNextMove will be called as an iterator for the min-max algorithm
 char* Awele::GetNextMove(int moveIndex)
 {
-    return "";
+
+    return "1";
 }
 
 void Awele::DisplayCellValue(int cellValue) const
@@ -61,6 +72,9 @@ void Awele::Display() const
     // bottom player
     for (int cell = 0; cell < 6; cell++)    Awele::DisplayCellValue(board[cell]);
     cout << endl;
+
+    // Scores
+    cout << "Score player 0: " << GetScore(0) << ",  Score player 1: " << GetScore(1) << endl; 
 } // end Display()
 
 // is the game finished?
@@ -92,10 +106,10 @@ moveStatus Awele::Move(const char * move)
     
     int lastCell = (nextCell-1) % 12;
     // Take content of cell with 2 or 3 stones
-    // but not the ones of the contestant
+    // but not the ones of the other contestant
     while(
-        lastCell >= (((currentPlayerIndex+1)%2)*6)+0 &&
-        lastCell <= (((currentPlayerIndex+1)%2)*6)+5 && 
+        lastCell >= (((currentPlayerIndex+1)%NB_OF_PLAYERS)*6)+0 &&
+        lastCell <= (((currentPlayerIndex+1)%NB_OF_PLAYERS)*6)+5 && 
         (board[lastCell] == 2 || board[lastCell] == 3)) {
         score[currentPlayerIndex] += board[lastCell];
         board[lastCell] = 0;
