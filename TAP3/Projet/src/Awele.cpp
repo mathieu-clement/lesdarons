@@ -99,7 +99,12 @@ moveStatus Awele::Move(const char * move)
     }
     
     int lastCell = (nextCell-1) % 12;
-    while(board[lastCell] == 2 || board[lastCell] == 3) {
+    // Take content of cell with 2 or 3 stones
+    // but not the ones of the contestant
+    while(
+        lastCell >= (((currentPlayerIndex+1)%2)*6)+0 &&
+        lastCell <= (((currentPlayerIndex+1)%2)*6)+5 && 
+        (board[lastCell] == 2 || board[lastCell] == 3)) {
         score[currentPlayerIndex] += board[lastCell];
         board[lastCell] = 0;
         lastCell = (nextCell-1) % 12;
