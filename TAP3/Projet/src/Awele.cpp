@@ -97,6 +97,13 @@ moveStatus Awele::Move(const char * move)
         nextCell = (nextCell+1) % 12;
         seedsToDistribute--;
     }
+    
+    int lastCell = (nextCell-1) % 12;
+    while(board[lastCell] == 2 || board[lastCell] == 3) {
+        score[currentPlayerIndex] += board[lastCell];
+        board[lastCell] = 0;
+        lastCell = (nextCell-1) % 12;
+    }
 
     return moveOK;
 }
