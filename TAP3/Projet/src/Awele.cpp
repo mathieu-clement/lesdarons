@@ -1,7 +1,8 @@
 #include "Awele.hpp"
 
 #include <iostream>
-#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -40,20 +41,32 @@ char* Awele::GetNextMove(int moveIndex)
 void Awele::Display() const
 {
     // Prints something like this:
-    // [1] [ ] [2] [ ] [4] [8]
-    // [ ] [2] [4] [ ] [ ] [ ]
+    // [ 1] [ ]  [ 2] [  ] [ 4] [ 8]
+    // [  ] [ 2] [ 4] [  ] [10] [12]
     
     // top player (cells are reversed)
     for (int cell = 11; cell >= 6; cell--) {
         int cellValue = board[cell];
-        cout << "[" << (cellValue > 0 ? std::to_string(cellValue) : " ") << "] ";
+        cout << "[";
+		if (cellValue > 0)
+            printf("%2d", cellValue);
+        else
+            cout << "  ";
+
+        cout << "] ";
     }
     cout << endl;
 
     // bottom player
     for (int cell = 0; cell < 6; cell++) {
         int cellValue = board[cell];
-        cout << "[" << (cellValue > 0 ? std::to_string(cellValue) : " ") << "] ";
+        cout << "[";
+		if (cellValue > 0)
+            printf("%2d", cellValue);
+        else
+            cout << "  ";
+
+        cout << "] ";
     }
     cout << endl;
 } // end Display()
@@ -67,7 +80,7 @@ GameStatus Awele::IsFinished() const
 // execute the move in the current game
 moveStatus Awele::Move(const char * move)
 {
-    int userInput = strtol(move, NULL, 10);
+    int userInput = atoi(move);
     if (userInput < 0 || userInput > 5) return badMove;
 
     int cellId = currentPlayerIndex * 6 + userInput;
