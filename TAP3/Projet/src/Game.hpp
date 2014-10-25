@@ -59,8 +59,6 @@ class Game
         // this is the board that should be used by the game implementation
         int* board;
 
-   private:
-
  };
 
 #endif // GAME_HPP

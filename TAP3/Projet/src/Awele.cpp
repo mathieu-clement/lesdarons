@@ -44,8 +44,11 @@ Game* Awele::Clone() const
 // GetNextMove will be called as an iterator for the min-max algorithm
 char* Awele::GetNextMove(int moveIndex)
 {
-
-    return "1";
+    // Unused here, we do it directly in the ComputerPlayer, but it would be this:
+    // Convert int to char*
+    char* move = new char[2]; // moves can be 1 digit (0 - 5);
+    sprintf(move, "%d", moveIndex);
+    return move;    
 }
 
 void Awele::DisplayCellValue(int cellValue) const
@@ -99,6 +102,8 @@ moveStatus Awele::Move(const char * move)
     // Perform move
     int nextCell = (cellId+1) % 12;
     while (seedsToDistribute > 0) {
+        // there is a rule that say you can't put seeds in the cell you started from.
+        if(nextCell == cellId) nextCell = (nextCell+1) % 12;
         board[nextCell]++;
         nextCell = (nextCell+1) % 12;
         seedsToDistribute--;
@@ -111,9 +116,9 @@ moveStatus Awele::Move(const char * move)
         lastCell >= (((currentPlayerIndex+1)%NB_OF_PLAYERS)*6)+0 &&
         lastCell <= (((currentPlayerIndex+1)%NB_OF_PLAYERS)*6)+5 && 
         (board[lastCell] == 2 || board[lastCell] == 3)) {
-        score[currentPlayerIndex] += board[lastCell];
-        board[lastCell] = 0;
-        lastCell = (nextCell-1) % 12;
+        score[currentPlayerIndex] += board[lastCell]; // update score
+        board[lastCell] = 0; // empty cell
+        lastCell = (nextCell-1) % 12; // go to next cell
     }
 
     return moveOK;
