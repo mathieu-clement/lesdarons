@@ -36,8 +36,14 @@ Score ComputerPlayer::ExpectedScore (bool isPlayer0, Game* game, char* bestMove,
             continue;
         }
 
-        m = ExpectedScore(isPlayer0 ? 1 : 0, newGame, bestMove, depth-1);
+        // Copy bestMove before passing it
+        char* tempMove = new char[2];
+        memcpy(tempMove, bestMove, 2);
+
+        m = ExpectedScore(isPlayer0 ? 1 : 0, newGame, tempMove, depth-1);
         delete newGame;
+        delete[] tempMove;
+
 
         if (isPlayer0) {
             if (m >= best) {
