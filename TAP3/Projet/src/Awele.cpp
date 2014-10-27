@@ -23,6 +23,15 @@ void Awele::InitGame()
     Game::InitGame();
     // Fill the 12 holes with 4 seeds
     fill_n(board, 12, 4);
+
+    // Manual
+    printf("Welcome to a new game of Awele!\n"
+           "When asked for \"Your move:\", enter a number between 0 and 5, "
+           "where 0 is the cell at the far left of the player.\n"
+           "The top row cells belong to player 1 and are displayed as if the player "
+           "was standing on the other side of the board. So his cell '0' is really "
+           "the one you see at the far right in the top line.\n"
+           "Have fun!\n");
 }
 
 // clone the game, to be used for the min-max algorithms
