@@ -88,6 +88,11 @@ Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
 } // end ExpectedScore()
 
 
+/**
+ * Play a move in the game.
+ *
+ * @param game the game instance
+ */
 void ComputerPlayer::Play(Game& game) const
 {
     char* bestMove = new char[2]; // move can be 1 digits (0 - 5)

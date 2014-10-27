@@ -5,6 +5,11 @@
 #include "HumanPlayer.hpp"
 #include "Game.hpp"
 
+/**
+ * Play a move in the game.
+ *
+ * @param game the instance of the game
+ */
 void HumanPlayer::Play(Game& game) const
 {
     bool valid = false;

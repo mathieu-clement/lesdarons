@@ -15,7 +15,7 @@ class AdvicedPlayer : public Player {
          *
          * @param depth Depth to go in the min max strategy tree. The greater the better.
          */
-        explicit AdvicedPlayer(int depth);
+        explicit AdvicedPlayer(int depth); // explicit prevents autocasting via constructor
 
         /**
          * Play a move in the game.
