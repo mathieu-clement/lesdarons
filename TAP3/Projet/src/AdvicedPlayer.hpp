@@ -9,7 +9,10 @@ class AdvicedPlayer : public Player {
     using Player::Player;
     
     public:
+        explicit AdvicedPlayer(int depth);
         virtual void Play(Game&) const;
+    protected:
+        int m_depth;
 };
 
 #endif

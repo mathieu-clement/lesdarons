@@ -13,8 +13,8 @@ class ComputerPlayer : public Player {
     public:
         explicit ComputerPlayer(int depth);
         virtual void Play(Game&) const;
+        static Score ExpectedScore (bool isPlayer0, Game* game, char* bestMove, int depth=INT_MAX);
     protected:
-        Score ExpectedScore (bool isPlayer0, Game* game, char* bestMove, int depth=INT_MAX) const;
         int m_depth;
 };
 

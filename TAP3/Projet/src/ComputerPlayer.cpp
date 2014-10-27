@@ -13,7 +13,7 @@ ComputerPlayer::ComputerPlayer(int depth) : Player()
     m_depth = depth;
 }
 
-Score ComputerPlayer::ExpectedScore (bool isPlayer0, Game* game, char* bestMove, int depth) const
+Score ComputerPlayer::ExpectedScore (bool isPlayer0, Game* game, char* bestMove, int depth)
 {
     Score best = 0;
     Score m = 0;
@@ -47,7 +47,7 @@ Score ComputerPlayer::ExpectedScore (bool isPlayer0, Game* game, char* bestMove,
         } else {
             if (m <= best) {
                 best = m;
-                memcpy(bestMove, move, 2);
+                //memcpy(bestMove, move, 2);
             }
         } // end if isPlayer0
     } // end for
