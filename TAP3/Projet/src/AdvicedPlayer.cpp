@@ -1,6 +1,7 @@
 
 #include <string>
 #include <iostream>
+#include <climits>
 
 #include "AdvicedPlayer.hpp"
 #include "ComputerPlayer.hpp"
@@ -22,7 +23,7 @@ void AdvicedPlayer::Play(Game& game) const
         // Computer advice
         // for error checking, if bestMove is unchanged it will keep the value "N"
         bestMove[0] = 'N'; bestMove[1] = 0;
-        ComputerPlayer::ExpectedScore(m_playerNo == 0, &game, bestMove, m_depth);
+        ComputerPlayer::ExpectedScore(m_playerNo, &game, bestMove, m_depth);
         std::cout << "Computer advises move '" << bestMove << "'" << std::endl;
 
         // What does the human wants to do?

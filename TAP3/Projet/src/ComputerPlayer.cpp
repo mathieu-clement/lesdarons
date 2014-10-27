@@ -13,17 +13,16 @@ ComputerPlayer::ComputerPlayer(int depth) : Player()
     m_depth = depth;
 }
 
-Score ComputerPlayer::ExpectedScore (bool isPlayer0, Game* game, char* bestMove, int depth)
+Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
+                                     int depth,
+                                     Score alpha, Score beta,
+                                     bool maximizingPlayer)
 {
-    Score best = 0;
     Score m = 0;
 
     if(game->IsFinished() || depth == 0)
-        return game->GetScore(isPlayer0 ? 0 : 1);
+        return game->GetScore(playerNo);
     
-    if (isPlayer0)      best = INT_MIN;
-    else                best = INT_MAX;
-
     char* move = new char[2]; // move can be 1 digits (0 - 5)
     for (int i = 0; i < 6; i++) {
         // Convert int to char*
@@ -40,26 +39,31 @@ Score ComputerPlayer::ExpectedScore (bool isPlayer0, Game* game, char* bestMove,
         char* tempMove = new char[2];
         memcpy(tempMove, bestMove, 2);
 
-        m = ExpectedScore(isPlayer0 ? 1 : 0, newGame, tempMove, depth-1);
+        m = ExpectedScore(playerNo == 0 ? 1 : 0, newGame, tempMove, depth-1, alpha, beta, maximizingPlayer ? false : true);
         delete newGame;
         delete[] tempMove;
 
-
-        if (isPlayer0) {
-            if (m >= best) {
-                best = m;
+        if (maximizingPlayer) {
+            if (m >= alpha) {
+                alpha = m;
                 memcpy(bestMove, move, 2);
             }
+            if (beta <= alpha) break; // Beta cut-off
         } else {
-            if (m <= best) {
-                best = m;
-                //memcpy(bestMove, move, 2);
+            if (m <= beta) {
+                beta = m;
+                // memcpy(bestMove, move, 2); // no need to know the best move of the other player
             }
-        } // end if isPlayer0
+            if (beta <= alpha) break; // Alpha cut-off
+        } // end if maximizingPlayer
     } // end for
     delete[] move;
 
-    return best;
+    if (maximizingPlayer) {
+        return alpha;
+    } else {
+        return beta;
+    }
 } // end ExpectedScore()
 
 
@@ -68,7 +72,7 @@ void ComputerPlayer::Play(Game& game) const
     char* bestMove = new char[2]; // move can be 1 digits (0 - 5)
     // for error checking, if bestMove is unchanged it will keep the value "N"
     bestMove[0] = 'N'; bestMove[1] = 0;
-    ExpectedScore(m_playerNo == 0, &game, bestMove, m_depth);
+    ExpectedScore(m_playerNo, &game, bestMove, m_depth);
     std::cout << "Computer will now play cell " << bestMove << std::endl;
     game.Move(bestMove);
     delete[] bestMove;
