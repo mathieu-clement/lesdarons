@@ -6,12 +6,21 @@
 #include "AdvicedPlayer.hpp"
 #include "ComputerPlayer.hpp"
 
+/**
+ * Create a new advised player with the specified intelligence / depth.
+ *
+ * @param depth Depth to go in the min max strategy tree. The greater the better.
+ */
 AdvicedPlayer::AdvicedPlayer(int depth) : Player()
 {
     m_depth = depth;
 }
 
-
+/**
+ * Play a move in the game.
+ *
+ * @param game the game instance
+ */
 void AdvicedPlayer::Play(Game& game) const
 {
     // Use logic from AdvicedPlayer to advise the player

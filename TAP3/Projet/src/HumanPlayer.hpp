@@ -5,10 +5,19 @@
 #include "Player.hpp"
 #include "Game.hpp"
 
+
+/**
+ * A Human player who inputs moves with a keyboard.
+ */
 class HumanPlayer : public Player {
-    using Player::Player;
+    using Player::Player; // inherit constructor from super class. Requires C++11 standard.
     
     public:
+        /**
+         * Play a move in the game.
+         *
+         * @param game the instance of the game
+         */
         virtual void Play(Game&) const;
 };
 

@@ -10,6 +10,9 @@ class Game;
 
 #include <string>
 
+/**
+ * A generic player
+ */
 class Player {
     public:
         /*
@@ -18,18 +21,51 @@ class Player {
          * It requires compiling against the C++11 standard.
          */
 
+        /**
+         * Create a new player.
+         */
         Player();
-        explicit Player(int);
 
+        /**
+         * Create a new player with the specified player number.
+         *
+         * @param playerNo player number
+         */
+        explicit Player(int); // explicit prevents autocasting via constructor
+
+        /**
+         * Play a move in the game.
+         *
+         * @param game the game instance
+         */
         virtual void Play(Game&) const =0;
+
+        /**
+         * Set the name of the player
+         *
+         * @param name player name
+         */
         void SetName(char*);
+
+        /**
+         * Set the player number
+         *
+         * @param no player number
+         */
         void SetPlayerNo(int);
 
+        /**
+         * Friend function to push player REFERENCE to stream
+         */
         friend std::ostream& operator<< (std::ostream&, Player const&);
+
+        /**
+         * Friend function to push player POINTER to stream
+         */
         friend std::ostream& operator<< (std::ostream&, Player*);
     protected:
-        int m_playerNo;
-        std::string m_playerName;
+        int m_playerNo; // player number parameter from constructor
+        std::string m_playerName; // player name paramter from constructor
 };
 
 #endif

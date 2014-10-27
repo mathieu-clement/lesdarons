@@ -5,9 +5,12 @@
 
 using namespace std;
 
+/**
+ * The main method of this program.
+ */
 int main()
 {
-    int gameType;
+    int gameType; // number assigned to type of game
 
     cout << "Which game do you want to play?" << endl;
     cout << "1: Awele" << endl;
@@ -15,11 +18,11 @@ int main()
     cin >> gameType ;
     cout << endl;
 
-    Game* game;
+    Game* game; // instance of the selected game
     if(gameType==1)
-        game = new Awele();
+        game = new Awele(); // new game of Awele
     else
-        game = new Nim();
+        game = new Nim(); // new game of Nim
     game->Run();
     delete game;
 

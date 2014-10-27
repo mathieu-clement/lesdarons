@@ -6,18 +6,26 @@
 
 using namespace std;
 
+/**
+ * Create a new game of Awele.
+ */
 Awele::Awele() : Game()
 {
     board = new int[12];
 }
 
+/**
+ * Destroy a game of Awele.
+ */
 Awele::~Awele()
 {
     this->Game::~Game();
     delete[] board;
 }
 
-// init the game
+/**
+ * Initialize the Awele game.
+ */
 void Awele::InitGame()
 {
     Game::InitGame();
@@ -34,7 +42,9 @@ void Awele::InitGame()
            "Have fun!\n");
 }
 
-// clone the game, to be used for the min-max algorithms
+/**
+ * Clone the game
+ */
 Game* Awele::Clone() const
 {
     Awele* game = new Awele();
@@ -60,6 +70,11 @@ char* Awele::GetNextMove(int moveIndex)
     return move;    
 }
 
+/**
+ * Display a cell with the specified value.
+ *
+ * @param cellValue the cell value
+ */
 void Awele::DisplayCellValue(int cellValue) const
 {
         cout << "[";
@@ -70,7 +85,9 @@ void Awele::DisplayCellValue(int cellValue) const
         cout << "] ";
 }
 
-// displays the board on the console
+/**
+ * Display the board on the console.
+ */
 void Awele::Display() const
 {
     // Prints something like this:
@@ -89,13 +106,23 @@ void Awele::Display() const
     cout << "Score player 0: " << GetScore(0) << ",  Score player 1: " << GetScore(1) << endl; 
 } // end Display()
 
-// is the game finished?
+/**
+ * Returns finished if the game is finished, else returns running.
+ *
+ * @return finished if game finished, else running
+ */
 GameStatus Awele::IsFinished() const
 {
    return (countSeeds(0) == 0 || countSeeds(1) == 0) ? finished : running;
 }
 
-// execute the move in the current game
+/**
+ * Execute the move in the current game.
+ *
+ * @param move "0" - "5"
+ *
+ * @return moveOK if move is valid, else badMove
+ */
 moveStatus Awele::Move(const char * move)
 {
     int userInput = atoi(move);
@@ -133,6 +160,13 @@ moveStatus Awele::Move(const char * move)
     return moveOK;
 }
 
+/**
+ * Count the seeds of a player
+ *
+ * @param playerId ID of the player (0 or 1)
+ *
+ * @return number of seeds of a player
+ */
 int Awele::countSeeds(int playerId) const // playerId 0 or 1
 {
     int offset = playerId * 6;

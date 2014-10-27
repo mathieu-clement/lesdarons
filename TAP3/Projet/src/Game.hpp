@@ -4,11 +4,14 @@
 
 #include "Player.hpp"
 
-typedef int Score;
+typedef int Score; // score of a player
 
-typedef enum{running=0, finished=1} GameStatus;
-typedef enum{badMove=0, moveOK=1} moveStatus;
+typedef enum{running=0, finished=1} GameStatus; // Status of game
+typedef enum{badMove=0, moveOK=1} moveStatus; // validity of a move
 
+/**
+ * A generic game
+ */
 class Game
 {
     public:
@@ -51,10 +54,10 @@ class Game
         Player* GetNextPlayer();
 
     protected:
-        static const int NB_OF_PLAYERS=2;
-        Player *players[NB_OF_PLAYERS];
-        int currentPlayerIndex;
-        int score[NB_OF_PLAYERS];
+        static const int NB_OF_PLAYERS=2; // number of players
+        Player *players[NB_OF_PLAYERS]; // array of players
+        int currentPlayerIndex; // index of current player
+        int score[NB_OF_PLAYERS]; // array of scores
 
         // this is the board that should be used by the game implementation
         int* board;
