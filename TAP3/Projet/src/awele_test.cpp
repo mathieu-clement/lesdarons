@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <random>
 
 namespace {
 
@@ -65,6 +66,28 @@ TEST_F(AweleTest, DisplayCellValue) {
         char* s = (char*) os.str().c_str();
         EXPECT_STREQ(targets[i], s);
     }
+}
+
+TEST_F(AweleTest, GameFinishesEventually) {
+    // Generate number between 0 and 5
+    std::default_random_engine generator;
+    std::uniform_int_distribution<int> distribution(0,5); 
+
+    bool valid = false;
+    char* moveStr = (char*) malloc(2);
+    
+    static int MAX_MOVES_TRIED = 1000;
+
+    int i;
+    for (i = 0; i <= MAX_MOVES_TRIED && !game->IsFinished(); i++) {
+        sprintf(moveStr, "%d", distribution(generator));
+        valid = game->Move(moveStr);
+        if (!valid) continue;
+        valid = false;
+        game->GetNextPlayer();
+    }
+
+    ASSERT_TRUE(game->IsFinished()) << "Game did NOT finish in " << MAX_MOVES_TRIED << " moves";
 }
 
 TEST_F(AweleTest, ComputerPlaysValidMoves) {
