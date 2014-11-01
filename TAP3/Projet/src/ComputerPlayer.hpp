@@ -53,6 +53,11 @@ class ComputerPlayer : public virtual Player {
                 Score beta = INT_MAX,  // beta  param from "alpha-beta-prunging" method
                 bool maximizingPlayer=true // true if player0 is current player
                 ) const;
+
+        /**
+         * Assignment operator
+         */
+        ComputerPlayer* operator= (const ComputerPlayer*);
     protected:
         int m_depth; // depth parameter passed in the constructor
 };

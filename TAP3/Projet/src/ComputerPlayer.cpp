@@ -101,3 +101,15 @@ void ComputerPlayer::Play(Game& game) const
     game.Move(bestMove);
     delete[] bestMove;
 }
+
+/**
+ * Assignment operator
+ */
+ ComputerPlayer* ComputerPlayer::operator= (const ComputerPlayer* other) {
+     if (this != other) {
+         this->m_depth = other->m_depth;
+         this->m_playerNo = other->m_playerNo;
+         this->m_playerName = other->m_playerName;
+     }
+     return this;
+ }

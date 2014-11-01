@@ -90,6 +90,33 @@ TEST_F(AweleTest, GameFinishesEventually) {
     ASSERT_TRUE(game->IsFinished()) << "Game did NOT finish in " << MAX_MOVES_TRIED << " moves";
 }
 
+TEST_F(AweleTest, SmartestComputerPlayerWins) {
+    int DUMB_COMPUTER_DEPTH = 1;
+    int SMART_COMPUTER_DEPTH = 10;
+    ComputerPlayer computer0(DUMB_COMPUTER_DEPTH);
+    ComputerPlayer computer1(SMART_COMPUTER_DEPTH);
+
+    bool valid = true;
+
+    char* bestMove = new char[2]; // move can be 1 digits (0 - 5)
+    while (valid && !game->IsFinished()) {
+        int playerIdx = game->currentPlayerIndex;
+        if(playerIdx == 0)
+            computer0.ExpectedScore(playerIdx, game, bestMove, DUMB_COMPUTER_DEPTH);
+        else
+            computer1.ExpectedScore(playerIdx, game, bestMove, SMART_COMPUTER_DEPTH);
+        valid = game->Move(bestMove);
+        game->GetNextPlayer();
+        ASSERT_TRUE(valid) << "Computer[" << playerIdx << "] played an invalid move.";
+    }
+   
+    delete[] bestMove;
+    
+    ASSERT_TRUE(game->GetScore(1) > game->GetScore(0)) << "The dumber computer won.";
+}
+
+/*
+// Deprecated, already done by SmartestComputerPlayerWins
 TEST_F(AweleTest, ComputerPlaysValidMoves) {
     ComputerPlayer computer(5);
 
@@ -105,6 +132,8 @@ TEST_F(AweleTest, ComputerPlaysValidMoves) {
    
     delete[] bestMove;
 }
+*/
+
 
 
 }  // namespace
