@@ -1,0 +1,12 @@
+A few unit tests have been implemented
+using Google Test.
+
+The tests are automatically built with CMake / Make.
+
+They can be run using "make test", or better, by running
+the "runUnitTests"(.exe) binary in the build folder.
+
+The dependency to GTest is packaged as a subfolder.
+GTest runs on Windows, Linux and OS X.
+
+The tests can be found in the file "awele_tests.cpp".
