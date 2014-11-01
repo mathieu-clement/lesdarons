@@ -12,6 +12,9 @@ using namespace std;
 Awele::Awele() : Game()
 {
     board = new int[12];
+
+    // Fill the 12 holes with 4 seeds
+    fill_n(board, 12, 4);
 }
 
 /**
@@ -29,8 +32,6 @@ Awele::~Awele()
 void Awele::InitGame()
 {
     Game::InitGame();
-    // Fill the 12 holes with 4 seeds
-    fill_n(board, 12, 4);
 
     // Manual
     printf("Welcome to a new game of Awele!\n"
