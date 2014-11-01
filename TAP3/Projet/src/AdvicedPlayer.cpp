@@ -28,8 +28,6 @@ void AdvicedPlayer::Play(Game& game) const
         std::cin >> str;
         if (str.compare("a") == 0) {
             // Computer advice if user types "a"
-            // for error checking, if bestMove is unchanged it will keep the value "N"
-            bestMove[0] = 'N'; bestMove[1] = 0;
             ComputerPlayer::ExpectedScore(m_playerNo, &game, bestMove, m_depth);
             std::cout << "Computer advises move '" << bestMove << "'" << std::endl;
         } else if (str.compare("q") == 0) {

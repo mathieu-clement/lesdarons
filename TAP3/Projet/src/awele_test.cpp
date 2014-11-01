@@ -97,8 +97,6 @@ TEST_F(AweleTest, ComputerPlaysValidMoves) {
 
     char* bestMove = new char[2]; // move can be 1 digits (0 - 5)
     while (valid && !game->IsFinished()) {
-        // for error checking, if bestMove is unchanged it will keep the value "N"
-        bestMove[0] = 'N'; bestMove[1] = 0;
         computer.ExpectedScore(game->currentPlayerIndex, game, bestMove, 5);
         valid = game->Move(bestMove);
         game->GetNextPlayer();

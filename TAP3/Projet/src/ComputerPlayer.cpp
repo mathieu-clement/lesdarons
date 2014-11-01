@@ -96,8 +96,6 @@ Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
 void ComputerPlayer::Play(Game& game) const
 {
     char* bestMove = new char[2]; // move can be 1 digits (0 - 5)
-    // for error checking, if bestMove is unchanged it will keep the value "N"
-    bestMove[0] = 'N'; bestMove[1] = 0;
     ExpectedScore(m_playerNo, &game, bestMove, m_depth);
     std::cout << "Computer will now play cell " << bestMove << std::endl;
     game.Move(bestMove);
