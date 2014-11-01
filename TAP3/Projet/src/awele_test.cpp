@@ -2,6 +2,7 @@
 
 #include "Game.hpp"
 #include "Awele.hpp"
+#include "ComputerPlayer.hpp"
 
 #undef protected
 
@@ -64,6 +65,24 @@ TEST_F(AweleTest, DisplayCellValue) {
         char* s = (char*) os.str().c_str();
         EXPECT_STREQ(targets[i], s);
     }
+}
+
+TEST_F(AweleTest, ComputerPlaysValidMoves) {
+    ComputerPlayer computer(5);
+
+    bool valid = true;
+
+    char* bestMove = new char[2]; // move can be 1 digits (0 - 5)
+    while (valid && !game->IsFinished()) {
+        // for error checking, if bestMove is unchanged it will keep the value "N"
+        bestMove[0] = 'N'; bestMove[1] = 0;
+        computer.ExpectedScore(game->currentPlayerIndex, game, bestMove, 5);
+        valid = game->Move(bestMove);
+        game->GetNextPlayer();
+        ASSERT_TRUE(valid) << "Computer played an invalid move";
+    }
+   
+    delete[] bestMove;
 }
 
 
