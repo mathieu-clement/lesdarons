@@ -21,7 +21,7 @@ From the src/ folder:
         Set the source folder and the build folder
         Click the [Configure] button
         Click the [Generate] button
-    mingw32-cmake
+    mingw32-make
 
 The executable is compiled with debug options.
 
