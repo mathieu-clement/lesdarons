@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <climits>
+#include <cstdlib>
 
 #include "AdvicedPlayer.hpp"
 #include "ComputerPlayer.hpp"
