@@ -3,6 +3,7 @@
 #define AWELE_HPP
 
 #include "Game.hpp"
+#include <iostream>
 
 class Awele : public Game {
     public:
@@ -70,7 +71,7 @@ class Awele : public Game {
          *
          * @param cellValue the cell value
          */
-        inline void DisplayCellValue(int cellValue) const;
+        /*inline*/ void DisplayCellValue(int cellValue, std::ostream& out = std::cout) const;
 
 };
 

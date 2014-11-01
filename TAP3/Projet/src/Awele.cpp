@@ -76,14 +76,14 @@ char* Awele::GetNextMove(int moveIndex)
  *
  * @param cellValue the cell value
  */
-void Awele::DisplayCellValue(int cellValue) const
+void Awele::DisplayCellValue(int cellValue, ostream& out) const
 {
-        cout << "[";
+        out << "[";
 		if (cellValue > 0)
             printf("%2d", cellValue);
         else
-            cout << "  ";
-        cout << "] ";
+            out << "  ";
+        out << "] ";
 }
 
 /**
