@@ -79,10 +79,13 @@ char* Awele::GetNextMove(int moveIndex)
 void Awele::DisplayCellValue(int cellValue, ostream& out) const
 {
         out << "[";
-		if (cellValue > 0)
-            printf("%2d", cellValue);
-        else
+		if (cellValue > 0) {
+            char buf[2];
+            sprintf(buf, "%2d", cellValue);
+            out << buf;
+        } else {
             out << "  ";
+        }
         out << "] ";
 }
 
