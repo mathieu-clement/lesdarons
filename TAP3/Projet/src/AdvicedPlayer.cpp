@@ -6,16 +6,7 @@
 
 #include "AdvicedPlayer.hpp"
 #include "ComputerPlayer.hpp"
-
-/**
- * Create a new advised player with the specified intelligence / depth.
- *
- * @param depth Depth to go in the min max strategy tree. The greater the better.
- */
-AdvicedPlayer::AdvicedPlayer(int depth) : Player()
-{
-    m_depth = depth;
-}
+#include "HumanPlayer.hpp"
 
 /**
  * Play a move in the game.
@@ -30,23 +21,26 @@ void AdvicedPlayer::Play(Game& game) const
 
     bool valid = false;
     while(true) {
-        // Computer advice
-        // for error checking, if bestMove is unchanged it will keep the value "N"
-        bestMove[0] = 'N'; bestMove[1] = 0;
-        ComputerPlayer::ExpectedScore(m_playerNo, &game, bestMove, m_depth);
-        std::cout << "Computer advises move '" << bestMove << "'" << std::endl;
 
         // What does the human wants to do?
         std::string str;
         std::cout << "Your move: ";
         std::cin >> str;
-        valid = game.Move(str.c_str()) == moveOK;
-        if (valid)
-            break;
-        else if (str.compare("q") == 0)
+        if (str.compare("a") == 0) {
+            // Computer advice if user types "a"
+            // for error checking, if bestMove is unchanged it will keep the value "N"
+            bestMove[0] = 'N'; bestMove[1] = 0;
+            ComputerPlayer::ExpectedScore(m_playerNo, &game, bestMove, m_depth);
+            std::cout << "Computer advises move '" << bestMove << "'" << std::endl;
+        } else if (str.compare("q") == 0) {
             std::exit(EXIT_SUCCESS);
-        else
-            std::cout << "Invalid move." << std::endl;
+        } else {
+            valid = game.Move(str.c_str()) == moveOK;
+            if (valid)
+                break;
+            else
+                std::cout << "Invalid move." << std::endl;
+        }
     } // end while
 
 }

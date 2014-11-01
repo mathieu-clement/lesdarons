@@ -10,7 +10,7 @@
 /**
  * A player who is really a computer algorithm (minimax with alpha-beta-pruning)
  */
-class ComputerPlayer : public Player {
+class ComputerPlayer : public virtual Player {
     public:
         /**
          * Create a new computer player with the specified intelligence / depth.
@@ -41,7 +41,7 @@ class ComputerPlayer : public Player {
          *
          * @return the best score for the specified player
          */
-        static Score ExpectedScore (
+        Score ExpectedScore (
                 int playerNo, // player number
                 Game* game, // instance of the game
                 char* bestMove, // the 2nd return value of the method, the best move to do
@@ -52,7 +52,7 @@ class ComputerPlayer : public Player {
                 Score alpha = INT_MIN, // alpha param from "alpha-beta-pruning" method
                 Score beta = INT_MAX,  // beta  param from "alpha-beta-prunging" method
                 bool maximizingPlayer=true // true if player0 is current player
-                );
+                ) const;
     protected:
         int m_depth; // depth parameter passed in the constructor
 };

@@ -37,7 +37,7 @@ ComputerPlayer::ComputerPlayer(int depth) : Player()
 Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
                                      int depth,
                                      Score alpha, Score beta,
-                                     bool maximizingPlayer)
+                                     bool maximizingPlayer) const
 {
     Score m = 0;
 
