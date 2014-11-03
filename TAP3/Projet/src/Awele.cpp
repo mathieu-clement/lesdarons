@@ -71,7 +71,7 @@ char* Awele::GetNextMove(int moveIndex)
         sprintf(returnVal, "STOP");
         return returnVal;
     }
-    // Unused here, we do it directly in the ComputerPlayer, but it would be this:
+
     // Convert int to char*
     char* move = new char[2]; // moves can be 1 digit (0 - 5);
     sprintf(move, "%d", moveIndex);
@@ -186,4 +186,20 @@ int Awele::countSeeds(int playerId) const // playerId 0 or 1
         nbSeeds += board[i+offset];
     }
     return nbSeeds;
+}
+
+// Display end of game
+void Awele::DisplayEndOfGame() const
+{
+    using namespace std;
+    cout << "Awele is finished." << endl;
+    cout << "Scores:" << endl;
+    Score score0 = GetScore(0); // real scores accounting for
+                                // the last rocks still on the board
+    Score score1 = GetScore(1); 
+    int remainingSeeds = countSeeds(0) + countSeeds(1);
+    score0  += (remainingSeeds+1)/2;
+    score1  += (remainingSeeds+1)/2;
+    cout << players[0] << ": " << score0 << endl;
+    cout << players[1] << ": " << score1 << endl;
 }

@@ -53,6 +53,11 @@ class Awele : public Game {
          */
         virtual moveStatus Move(const char * move);
 
+        /**
+         * Display end of game
+         */
+        void DisplayEndOfGame() const;
+
     private:
         /**
          * Count the seeds of a player

@@ -86,6 +86,9 @@ TEST_F(AweleTest, GameFinishesEventually) {
         valid = false;
         game->GetNextPlayer();
     }
+    //std::cout << "Score 0: " << game->GetScore(0) << std::endl;
+    //std::cout << "Score 1: " << game->GetScore(1) << std::endl;
+    game->DisplayEndOfGame();
 
     ASSERT_TRUE(game->IsFinished()) << "Game did NOT finish in " 
                 << MAX_MOVES_TRIED << " moves";
