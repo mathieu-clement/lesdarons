@@ -17,7 +17,8 @@ void AdvicedPlayer::Play(Game& game) const
 {
     // Use logic from AdvicedPlayer to advise the player
     // But input from HumanPlayer
-    char* bestMove = new char[2]; // move can be 1 digits (0 - 5) => advice from computer
+    char* bestMove = new char[2]; // move can be 1 digits (0 - 5) => advice 
+                                  // from computer
 
     bool valid = false;
     while(true) {
@@ -29,7 +30,8 @@ void AdvicedPlayer::Play(Game& game) const
         if (str.compare("a") == 0) {
             // Computer advice if user types "a"
             ComputerPlayer::ExpectedScore(m_playerNo, &game, bestMove, m_depth);
-            std::cout << "Computer advises move '" << bestMove << "'" << std::endl;
+            std::cout << "Computer advises move '" << bestMove << "'" 
+                      << std::endl;
         } else if (str.compare("q") == 0) {
             std::exit(EXIT_SUCCESS);
         } else {

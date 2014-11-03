@@ -11,7 +11,8 @@
  */
 class AdvicedPlayer : public HumanPlayer, public ComputerPlayer {
     
-    using ComputerPlayer::ComputerPlayer; // inherit constructor from super class. Requires C++11 standard.
+    using ComputerPlayer::ComputerPlayer; // inherit constructor from super class
+                                          // Requires C++11 standard.
 
     public:
         /**

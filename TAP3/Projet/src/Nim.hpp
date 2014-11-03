@@ -16,13 +16,14 @@ class Nim : public Game {
         void Run();
 
         // clone the game, to be used for the min-max algorithms
-        virtual Game* Clone()const; // Here no "=0" (which indicates a "pure" virtual method)
+        virtual Game* Clone()const; // Here no "=0" 
+                                    // (which indicates a "pure" virtual method)
 
         // evaluate a game
         int Evaluate() const;
 
         // GetNextMove provides the next available move for the current game
-        // GetNextMove will be called as an iterator for the min-max algortihm
+        // GetNextMove will be called as an iterator for the min-max algorithm
         char* GetNextMove(int moveIndex);
 
         // return the current score of player playerNo

@@ -10,7 +10,8 @@
  * A Human player who inputs moves with a keyboard.
  */
 class HumanPlayer : public virtual Player {
-    using Player::Player; // inherit constructor from super class. Requires C++11 standard.
+    using Player::Player; // inherit constructor from super class. 
+                          // Requires C++11 standard.
     
     public:
         /**

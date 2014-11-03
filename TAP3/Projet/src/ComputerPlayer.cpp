@@ -25,8 +25,10 @@ ComputerPlayer::ComputerPlayer(int depth) : Player()
  *
  * @param playerNo          the player number (0 or 1)
  * @param game              the game instance
- * @param bestMove          the move to achieve that score. YOU must allocate a 2 char array.
- * @param depth             Optional. Depth to go in the tree, the greater the better.
+ * @param bestMove          the move to achieve that score. 
+ *                          YOU must allocate a 2 char array.
+ * @param depth             Optional. Depth to go in the tree, 
+ *                          the greater the better.
  * @param alpha             Optional. Alpha parameter in alpha-beta-pruning.
  * @param beta              Optional. Beta paramter in alpha-beta-pruning.
  * @param maximizingPlayer  set to true if the current player is the one we are
@@ -60,7 +62,9 @@ Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
         char* tempMove = new char[2];
         memcpy(tempMove, bestMove, 2);
 
-        m = ExpectedScore(playerNo == 0 ? 1 : 0, newGame, tempMove, depth-1, alpha, beta, maximizingPlayer ? false : true);
+        m = ExpectedScore(playerNo == 0 ? 1 : 0, newGame, tempMove, depth-1, 
+                          alpha, beta, 
+                          maximizingPlayer ? false : true);
         delete newGame;
         delete[] tempMove;
 
@@ -73,7 +77,6 @@ Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
         } else {
             if (m <= beta) {
                 beta = m;
-                // memcpy(bestMove, move, 2); // no need to know the best move of the other player
             }
             if (beta <= alpha) break; // Alpha cut-off
         } // end if maximizingPlayer

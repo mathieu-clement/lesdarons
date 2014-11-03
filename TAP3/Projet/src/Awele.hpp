@@ -25,10 +25,11 @@ class Awele : public Game {
         /**
          * Clone the game
          */
-        virtual Game* Clone()const; // Here no "=0" (which indicates a "pure" virtual method)
+        virtual Game* Clone()const; // Here no "=0" 
+                                    // (which indicates a "pure" virtual method)
 
         // GetNextMove provides the next available move for the current game
-        // GetNextMove will be called as an iterator for the min-max algortihm
+        // GetNextMove will be called as an iterator for the min-max algorithm
         char* GetNextMove(int moveIndex);
 
         /**
@@ -61,7 +62,8 @@ class Awele : public Game {
          * @return number of seeds of a player
          */
         // Re-use board* from super, need to be initialized in constructor
-        //int board[12]; // 11 10 9  8  7  6  => 2nd player: seen as 5 4 3 2 1 0 from his side 
+        //int board[12]; // 11 10 9  8  7  6  => 2nd player: 
+                                           // seen as 5 4 3 2 1 0 from his side 
                          // 0  1  2  3  4  5  => 1st player
         int countSeeds(int playerId) const; // playerId 0 or 1
 
@@ -71,7 +73,8 @@ class Awele : public Game {
          *
          * @param cellValue the cell value
          */
-        /*inline*/ void DisplayCellValue(int cellValue, std::ostream& out = std::cout) const;
+        void DisplayCellValue(int cellValue, 
+                              std::ostream& out = std::cout) const;
 
 };
 
