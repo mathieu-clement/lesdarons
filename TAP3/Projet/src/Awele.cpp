@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <cstring>
+
 using namespace std;
 
 /**
@@ -64,6 +66,11 @@ Game* Awele::Clone() const
 // GetNextMove will be called as an iterator for the min-max algorithm
 char* Awele::GetNextMove(int moveIndex)
 {
+    if(moveIndex > 5) {
+        char* returnVal = (char*) malloc((size_t)(std::strlen("STOP") + 1));
+        sprintf(returnVal, "STOP");
+        return returnVal;
+    }
     // Unused here, we do it directly in the ComputerPlayer, but it would be this:
     // Convert int to char*
     char* move = new char[2]; // moves can be 1 digit (0 - 5);

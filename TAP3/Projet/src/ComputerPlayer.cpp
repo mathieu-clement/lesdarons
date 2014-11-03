@@ -1,9 +1,11 @@
 
 #include <string>
+#include <cstring>
 #include <iostream>
 #include <climits>
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
 
 #include "ComputerPlayer.hpp"
 #include "Game.hpp"
@@ -46,10 +48,15 @@ Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
     if(game->IsFinished() || depth == 0)
         return game->GetScore(playerNo);
     
-    char* move = new char[2]; // move can be 1 digits (0 - 5)
-    for (int i = 0; i < 6; i++) {
-        // Convert int to char*
-        sprintf(move, "%d", i);
+    char* move = new char[20]; // move can be 1 digits (0 - 5) in Awele
+                               // We suppose 20 is a safe value...
+    bool hasNextMove = true;
+    int moveIndex = 0;
+    while(true) {
+        move = game->GetNextMove(moveIndex);
+        if(strcmp(move, "STOP") == 0) break;
+        moveIndex++;
+
         Game* newGame = game->Clone();
         moveStatus valid = newGame->Move(move);
         newGame->GetNextPlayer();
@@ -59,8 +66,9 @@ Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
         }
 
         // Copy bestMove before passing it
-        char* tempMove = new char[2];
-        memcpy(tempMove, bestMove, 2);
+        size_t moveSize = strlen(move) + 1;
+        char* tempMove = (char*) malloc(moveSize);
+        memcpy(tempMove, bestMove, moveSize);
 
         m = ExpectedScore(playerNo == 0 ? 1 : 0, newGame, tempMove, depth-1, 
                           alpha, beta, 
@@ -71,7 +79,7 @@ Score ComputerPlayer::ExpectedScore (int playerNo, Game* game, char* bestMove,
         if (maximizingPlayer) {
             if (m >= alpha) {
                 alpha = m;
-                memcpy(bestMove, move, 2);
+                memcpy(bestMove, move, moveSize);
             }
             if (beta <= alpha) break; // Beta cut-off
         } else {

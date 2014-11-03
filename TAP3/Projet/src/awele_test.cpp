@@ -87,7 +87,8 @@ TEST_F(AweleTest, GameFinishesEventually) {
         game->GetNextPlayer();
     }
 
-    ASSERT_TRUE(game->IsFinished()) << "Game did NOT finish in " << MAX_MOVES_TRIED << " moves";
+    ASSERT_TRUE(game->IsFinished()) << "Game did NOT finish in " 
+                << MAX_MOVES_TRIED << " moves";
 }
 
 TEST_F(AweleTest, SmartestComputerPlayerWins) {
@@ -102,12 +103,15 @@ TEST_F(AweleTest, SmartestComputerPlayerWins) {
     while (valid && !game->IsFinished()) {
         int playerIdx = game->currentPlayerIndex;
         if(playerIdx == 0)
-            computer0.ExpectedScore(playerIdx, game, bestMove, DUMB_COMPUTER_DEPTH);
+            computer0.ExpectedScore(playerIdx, game, bestMove, 
+                                    DUMB_COMPUTER_DEPTH);
         else
-            computer1.ExpectedScore(playerIdx, game, bestMove, SMART_COMPUTER_DEPTH);
+            computer1.ExpectedScore(playerIdx, game, bestMove, 
+                                    SMART_COMPUTER_DEPTH);
         valid = game->Move(bestMove);
         game->GetNextPlayer();
-        ASSERT_TRUE(valid) << "Computer[" << playerIdx << "] played an invalid move.";
+        ASSERT_TRUE(valid) << "Computer[" << playerIdx << "] " 
+                    << "played an invalid move.";
     }
    
     delete[] bestMove;
