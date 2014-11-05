@@ -86,9 +86,6 @@ TEST_F(AweleTest, GameFinishesEventually) {
         valid = false;
         game->GetNextPlayer();
     }
-    //std::cout << "Score 0: " << game->GetScore(0) << std::endl;
-    //std::cout << "Score 1: " << game->GetScore(1) << std::endl;
-    game->DisplayEndOfGame();
 
     ASSERT_TRUE(game->IsFinished()) << "Game did NOT finish in " 
                 << MAX_MOVES_TRIED << " moves";
@@ -97,8 +94,12 @@ TEST_F(AweleTest, GameFinishesEventually) {
 TEST_F(AweleTest, SmartestComputerPlayerWins) {
     int DUMB_COMPUTER_DEPTH = 1;
     int SMART_COMPUTER_DEPTH = 10;
-    ComputerPlayer computer0(DUMB_COMPUTER_DEPTH);
-    ComputerPlayer computer1(SMART_COMPUTER_DEPTH);
+    Player* computer0 = new ComputerPlayer(DUMB_COMPUTER_DEPTH);
+    computer0->SetName("Dumb computer");
+    game->players[0] = computer0;
+    Player* computer1 = new ComputerPlayer(SMART_COMPUTER_DEPTH);
+    computer1->SetName("Smart computer");
+    game->players[1] = computer1;
 
     bool valid = true;
 
@@ -106,11 +107,11 @@ TEST_F(AweleTest, SmartestComputerPlayerWins) {
     while (valid && !game->IsFinished()) {
         int playerIdx = game->currentPlayerIndex;
         if(playerIdx == 0)
-            computer0.ExpectedScore(playerIdx, game, bestMove, 
-                                    DUMB_COMPUTER_DEPTH);
+            (dynamic_cast<ComputerPlayer*>(computer0))->ExpectedScore(playerIdx, game, bestMove, 
+                                                                      DUMB_COMPUTER_DEPTH);
         else
-            computer1.ExpectedScore(playerIdx, game, bestMove, 
-                                    SMART_COMPUTER_DEPTH);
+            (dynamic_cast<ComputerPlayer*>(computer1))->ExpectedScore(playerIdx, game, bestMove, 
+                                                                      SMART_COMPUTER_DEPTH);
         valid = game->Move(bestMove);
         game->GetNextPlayer();
         ASSERT_TRUE(valid) << "Computer[" << playerIdx << "] " 
@@ -118,6 +119,10 @@ TEST_F(AweleTest, SmartestComputerPlayerWins) {
     }
    
     delete[] bestMove;
+    
+    //std::cout << "Score 0: " << game->GetScore(0) << std::endl;
+    //std::cout << "Score 1: " << game->GetScore(1) << std::endl;
+    game->DisplayEndOfGame();
     
     ASSERT_TRUE(game->GetScore(1) > game->GetScore(0)) << "The dumber computer won.";
 }

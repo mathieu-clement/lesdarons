@@ -36,13 +36,13 @@ void Awele::InitGame()
     Game::InitGame();
 
     // Manual
-    printf("Welcome to a new game of Awele!\n"
-           "When asked for \"Your move:\", enter a number between 0 and 5, "
-           "where 0 is the cell at the far left of the player.\n"
-           "The top row cells belong to player 1 and are displayed as if the player "
-           "was standing on the other side of the board. So his cell '0' is really "
-           "the one you see at the far right in the top line.\n"
-           "Have fun!\n");
+    std::cout << "Welcome to a new game of Awele!\n" <<
+           "When asked for \"Your move:\", enter a number between 0 and 5, " <<
+           "where 0 is the cell at the far left of the player.\n" <<
+           "The top row cells belong to player 1 and are displayed as if the player " <<
+           "was standing on the other side of the board. So his cell '0' is really " <<
+           "the one you see at the far right in the top line.\n" <<
+           "Have fun!" << std::endl;
 }
 
 /**
@@ -87,9 +87,10 @@ void Awele::DisplayCellValue(int cellValue, ostream& out) const
 {
         out << "[";
 		if (cellValue > 0) {
-            char buf[2];
+            char* buf = new char[3];
             sprintf(buf, "%2d", cellValue);
             out << buf;
+            delete[] buf;
         } else {
             out << "  ";
         }
