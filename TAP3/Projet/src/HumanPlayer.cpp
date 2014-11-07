@@ -15,7 +15,7 @@ void HumanPlayer::Play(Game& game) const
     bool valid = false;
     while(true) {
         std::string str;
-        std::cout << "Your move: ";
+        std::cout << "Player "<< m_playerNo << ", your move: ";
         std::cin >> str;
         valid = game.Move(str.c_str()) == moveOK;
         if (valid)

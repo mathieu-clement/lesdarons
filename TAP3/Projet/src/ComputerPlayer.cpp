@@ -108,7 +108,7 @@ void ComputerPlayer::Play(Game& game) const
 {
     char* bestMove = new char[2]; // move can be 1 digits (0 - 5)
     ExpectedScore(m_playerNo, &game, bestMove, m_depth);
-    std::cout << "Computer will now play cell " << bestMove << std::endl;
+    std::cout << "Computer will now play " << bestMove << std::endl;
     game.Move(bestMove);
     delete[] bestMove;
 }

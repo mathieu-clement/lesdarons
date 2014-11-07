@@ -19,15 +19,10 @@ class Nim : public Game {
         virtual Game* Clone()const; // Here no "=0" 
                                     // (which indicates a "pure" virtual method)
 
-        // evaluate a game
-        int Evaluate() const;
-
         // GetNextMove provides the next available move for the current game
         // GetNextMove will be called as an iterator for the min-max algorithm
         char* GetNextMove(int moveIndex);
 
-        // return the current score of player playerNo
-        Score GetScore(int playerNo) const;
 
         // displays the board on the console
         void Display() const;
@@ -41,6 +36,8 @@ class Nim : public Game {
         // execute the move in the current game
         virtual moveStatus Move(const char * move);
 
+    private:
+        int stack;
 };
 
 #endif
