@@ -130,7 +130,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                             for (int j = 0; j < inputs.length; j++) {
                                 double oldWeight = outputNeurons[n].getWeightsNoModifyPlease()[j];
                                 double newWeight = oldWeight;
-                                double zn = hiddenNeuronsOutputs[n];
+                                double zn = outputNeuronsOutputs[n];
                                 newWeight += eta * outputNeuronsErrors[n] * (zn * (1 - zn)) * hiddenNeuronsOutputsWithY0[j];
                                 outputNeurons[n].setWeight(j, newWeight);
                             }
