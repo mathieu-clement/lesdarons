@@ -73,6 +73,8 @@ public class TrainBallSingleNeuronMain {
             String weightsStr = Arrays.toString(neuron.getWeights());
             System.out.println(weightsStr);
 
+            System.out.println("Starting Matlab...");
+
             MatlabProxyFactoryOptions.Builder factoryOptionsBuilder = new MatlabProxyFactoryOptions.Builder();
             factoryOptionsBuilder.setUsePreviouslyControlledSession(true);
             factoryOptionsBuilder.setMatlabStartingDirectory(new File("C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\SN_Clement"));
@@ -80,6 +82,9 @@ public class TrainBallSingleNeuronMain {
 
             MatlabProxyFactory matlabProxyFactory = new MatlabProxyFactory(matlabProxyFactoryOptions);
             matlabProxy = matlabProxyFactory.getProxy();
+
+            System.out.println("Make sure Matlab is started and press [Enter]");
+            System.in.read();
 
             matlabProxy.eval("SingleNeuronCheck(" + weightsStr + ')');
 
