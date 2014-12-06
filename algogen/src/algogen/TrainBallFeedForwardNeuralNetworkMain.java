@@ -231,7 +231,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (MatlabInvocationException e) {
-            e.printStackTrace();
+            System.err.println("MATLAB error: " + e.getCause());
         } catch (MatlabConnectionException e) {
             e.printStackTrace();
         } finally {
