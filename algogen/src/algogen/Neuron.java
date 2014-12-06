@@ -21,7 +21,7 @@ public class Neuron {
         assert this.weights.length == inputs.length;
         assert inputs[0] == 1;
 
-        double y = AlgoGenUtils.sigmoid(AlgoGenUtils.weightedSum(this.weights, inputs));
+        double y = AlgoGenUtils.sigmoid(AlgoGenUtils.dotProduct(this.weights, inputs));
         double error = t - y;
         for (int j = 0; j < inputs.length; j++) {
             weights[j] += eta * error * inputs[j];
