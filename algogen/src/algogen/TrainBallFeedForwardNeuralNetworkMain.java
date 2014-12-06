@@ -66,10 +66,10 @@ public class TrainBallFeedForwardNeuralNetworkMain {
              *         TRAINING          *
              *****************************/
 
-            double hiddenNeuronsOutputs[] = new double[hiddenNeurons.length + 1];
-            double hiddenNeuronsErrors[] = new double[hiddenNeurons.length + 1];
-            double outputNeuronsOutputs[] = new double[outputNeurons.length + 1];
-            double outputNeuronsErrors[] = new double[outputNeurons.length + 1];
+            double hiddenNeuronsOutputs[] = new double[hiddenNeurons.length];
+            double hiddenNeuronsErrors[] = new double[hiddenNeurons.length];
+            double outputNeuronsOutputs[] = new double[outputNeurons.length];
+            double outputNeuronsErrors[] = new double[outputNeurons.length];
 
             double successRatio = 0;
             int nbIter = 0;
@@ -93,7 +93,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
                         // zs
                         for (int s = 0; s < outputNeurons.length; s++) {
-                            outputNeuronsOutputs[s] = outputNeurons[s].calculateOutput(hiddenNeuronsOutputs);
+                            outputNeuronsOutputs[s] = outputNeurons[s].calculateOutput(AlgoGenUtils.addColumn1(hiddenNeuronsOutputs));
                         }
 
                         // -------------------------------------
@@ -131,7 +131,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                                 double oldWeight = outputNeurons[n].getWeightsNoModifyPlease()[j];
                                 double newWeight = oldWeight;
                                 double zn = hiddenNeuronsOutputs[n];
-                                newWeight += eta * outputNeuronsErrors[n] * (zn * (1 - zn)) * hiddenNeuronsOutputs[j];
+                                newWeight += eta * outputNeuronsErrors[n] * (zn * (1 - zn)) * hiddenNeuronsOutputsWithY0[j];
                                 outputNeurons[n].setWeight(j, newWeight);
                             }
                         }
