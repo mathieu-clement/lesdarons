@@ -1,8 +1,7 @@
 package algogen;
 
-import matlabcontrol.*;
+import matlabcontrol.MatlabProxy;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -12,7 +11,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         // NB: Except for data set 4, there is one output
 
         // Parameters you can change
-        int nbIterMax = 1000;
+        int nbIterMax = 10000;
         int nbHiddenNeurons = 3;
         int nbOutputNeurons = 1;
         int goalValueMax = 1;
@@ -211,7 +210,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
             System.out.printf("\r%8d / %8d patterns evaluated%n", evaluationPatterns.length, evaluationPatterns.length);
             System.out.println();
-            System.out.println("Starting Matlab...");
+            /*System.out.println("Starting Matlab...");
 
             MatlabProxyFactoryOptions.Builder factoryOptionsBuilder = new MatlabProxyFactoryOptions.Builder();
             factoryOptionsBuilder.setUsePreviouslyControlledSession(true);
@@ -225,15 +224,14 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             System.in.read();
 
             matlabProxy.eval("NeuralNetworkCheck");
+            */
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (MatlabInvocationException e) {
-            System.err.println("MATLAB error: " + e.getCause());
-        } catch (MatlabConnectionException e) {
-            e.printStackTrace();
+        /*} catch (MatlabInvocationException e) {
+            System.err.println("MATLAB error: " + e.getCause());*/
         } finally {
             for (BallDataFile ballDataFile : ballDataFiles) {
                 if (ballDataFile != null)
