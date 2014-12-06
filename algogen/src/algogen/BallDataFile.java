@@ -11,6 +11,15 @@ public class BallDataFile extends File {
 
     private boolean constructorCalledFromHere = false;
 
+    /**
+     * @deprecated
+     * Do NOT call this constructor.
+     * Use {@link #openForReading(String)} or
+     * {@link #openForWriting(String)} instead.
+     *
+     * @param pathname do not use
+     * @throws IOException do not worry about that
+     */
     public BallDataFile(String pathname) throws IOException {
         super(pathname);
     }
@@ -31,7 +40,10 @@ public class BallDataFile extends File {
 
     public void close() throws IOException {
         checkProperConstructorCalled();
-        reader.close();
+        if (reader != null)
+            reader.close();
+        if (writer != null)
+            writer.close();
     }
 
     private void checkProperConstructorCalled() throws IllegalAccessError {
@@ -43,12 +55,12 @@ public class BallDataFile extends File {
 
     public double[][] readAsArray() throws IOException {
         checkProperConstructorCalled();
-        ToArrayPatternCallback callback = new ToArrayPatternCallback();
+        ReadArrayPatternCallback callback = new ReadArrayPatternCallback();
         applyOnEachLine(callback);
         return callback.getResults();
     }
 
-    private static class ToArrayPatternCallback implements PatternCallback {
+    private static class ReadArrayPatternCallback implements PatternCallback {
 
         private double results[][] = new double[2][];
         private int crtIndex = 0;
@@ -93,6 +105,15 @@ public class BallDataFile extends File {
                 }
             }
             callback.onEachPattern(inputs);
+        }
+    }
+
+    public void writeArrayToFile(double[][] arr) throws IOException {
+        for (double[] line : arr) {
+            for (double col : line) {
+                writer.write(String.format("%04.9f ", col));
+            }
+            writer.newLine();
         }
     }
 }
