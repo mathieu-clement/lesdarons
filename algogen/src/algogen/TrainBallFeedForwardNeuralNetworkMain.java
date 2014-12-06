@@ -1,5 +1,8 @@
 package algogen;
 
+import matlabcontrol.*;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -21,6 +24,8 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
         // Program
         BallDataFile ballDataFiles[] = new BallDataFile[4];
+
+        MatlabProxy matlabProxy = null;
 
         try {
             // ZERO data (or ONE data)
@@ -205,24 +210,42 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             }
 
             System.out.printf("\r%8d / %8d patterns evaluated%n", evaluationPatterns.length, evaluationPatterns.length);
+            System.out.println();
+            System.out.println("Starting Matlab...");
+
+            MatlabProxyFactoryOptions.Builder factoryOptionsBuilder = new MatlabProxyFactoryOptions.Builder();
+            factoryOptionsBuilder.setUsePreviouslyControlledSession(true);
+            factoryOptionsBuilder.setMatlabStartingDirectory(new File(WORKING_DIR));
+            MatlabProxyFactoryOptions matlabProxyFactoryOptions = factoryOptionsBuilder.build();
+
+            MatlabProxyFactory matlabProxyFactory = new MatlabProxyFactory(matlabProxyFactoryOptions);
+            matlabProxy = matlabProxyFactory.getProxy();
+
+            System.out.println("Make sure Matlab is started in the correct directory and press [Enter]");
+            System.in.read();
+
+            matlabProxy.eval("NeuralNetworkCheck");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (MatlabInvocationException e) {
+            e.printStackTrace();
+        } catch (MatlabConnectionException e) {
+            e.printStackTrace();
         } finally {
-            if (ballDataFiles[0] != null)
-                try {
-                    ballDataFiles[0].close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            if (ballDataFiles[1] != null)
-                try {
-                    ballDataFiles[1].close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            for (BallDataFile ballDataFile : ballDataFiles) {
+                if (ballDataFile != null)
+                    try {
+                        ballDataFile.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+            if (matlabProxy != null) {
+                matlabProxy.disconnect();
+            }
         }
     }
 
