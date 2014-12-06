@@ -10,7 +10,7 @@ public class Neuron {
         weights = new double[nbInputs + 1];
         // Optionally assign random weights
         for (int i = 0; i < weights.length; i++) {
-            weights[i] =  Math.random();
+            weights[i] = Math.random();
         }
     }
 

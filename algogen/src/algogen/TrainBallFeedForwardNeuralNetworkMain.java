@@ -12,9 +12,9 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         // NB: Except for data set 4, there is one output
 
         // Parameters you can change
-        int nbIterMax = 20000;
-        double goalSuccessRatio = 0.85;
-        double eta = 0.02; // learning rate
+        int nbIterMax = 30000;
+        double goalSuccessRatio = 0.70;
+        double eta = 0.01; // learning rate
         int nbHiddenNeurons = 3;
         int nbOutputNeurons = 1;
         int goalValueMax = 1;
