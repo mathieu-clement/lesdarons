@@ -12,8 +12,8 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         // NB: Except for data set 4, there is one output
 
         // Parameters you can change
-        int nbIterMax = 30000;
-        double goalSuccessRatio = 0.70;
+        int nbIterMax = 50000;
+        double goalSuccessRatio = 0.998;
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 3;
         int nbOutputNeurons = 1;
@@ -149,7 +149,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
                         // TODO Change for multiple output neurons
 
-                        double actualOutput = outputNeurons[0].calculateOutput(inputs);
+                        double actualOutput = outputNeurons[0].calculateOutput(hiddenNeuronsOutputsWithY0);
 
                         if (goalValue == 0) {
                             if (actualOutput < 0.5) {
