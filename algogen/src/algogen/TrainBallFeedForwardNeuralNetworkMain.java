@@ -13,13 +13,13 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
         // Parameters you can change
         int nbIterMax = 20000;
+        double goalSuccessRatio = 0.85;
+        double eta = 0.02; // learning rate
         int nbHiddenNeurons = 3;
         int nbOutputNeurons = 1;
         int goalValueMax = 1;
         int goalValueMin = 0;
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
-        double eta = 0.02; // learning rate
-        double goalSuccessRatio = 0.998;
         String WORKING_DIR = "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\NN_Clement";
 
         // Program
