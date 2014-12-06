@@ -10,6 +10,8 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
         // Parameters you can change
         int nbIterMax = 20;
+        int nbHiddenNeurons = 3;
+        int nbOutputNeurons = 1;
         int goalValueMax = 1;
         int goalValueMin = 0;
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
@@ -46,8 +48,8 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
             int totalPredictions = lines[0].length + lines[1].length;
 
-            Neuron outputNeurons[] = new Neuron[1];
-            Neuron hiddenNeurons[] = new Neuron[nbInputs];
+            Neuron outputNeurons[] = new Neuron[nbOutputNeurons];
+            Neuron hiddenNeurons[] = new Neuron[nbHiddenNeurons];
             for (int i = 0; i < hiddenNeurons.length; i++) {
                 hiddenNeurons[i] = new Neuron(nbInputs);
             }
