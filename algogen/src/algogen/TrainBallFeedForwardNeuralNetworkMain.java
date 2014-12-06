@@ -12,7 +12,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         // NB: Except for data set 4, there is one output
 
         // Parameters you can change
-        int nbIterMax = 10000;
+        int nbIterMax = 20000;
         int nbHiddenNeurons = 3;
         int nbOutputNeurons = 1;
         int goalValueMax = 1;
@@ -163,7 +163,8 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                             }
                         }
                     }
-                    System.out.printf("%5d %.5f%n", nbIter, successRatio);
+                    if (nbIter % 1000 == 0)
+                        System.out.printf("%5d %.5f%n", nbIter, successRatio);
                 }
             }
 
@@ -205,7 +206,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
                 ballEvalDataFile.writeNewLine();
 
-                if (p % 1000 == 0)
+                if (p % 10000 == 0)
                     System.out.printf("\r%8d / %8d patterns evaluated", p + 1, evaluationPatterns.length);
             }
 
