@@ -8,12 +8,15 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         // NB: For now with one neuron inside the hidden layer
         // NB: Except for data set 4, there is one output
 
+        // Parameters you can change
+        int nbIterMax = 20;
         int goalValueMax = 1;
         int goalValueMin = 0;
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
         double eta = 0.02; // learning rate
         double goalSuccessRatio = 0.998;
 
+        // Program
         BallDataFile ballDataFiles[] = new BallDataFile[2];
 
         try {
@@ -52,7 +55,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             double successRatio = 0;
             int nbIter = 0;
 
-            while (successRatio < goalSuccessRatio && nbIter++ < 1000) {
+            while (successRatio < goalSuccessRatio && nbIter++ < nbIterMax) {
                 int nbGoodPredictions = 0;
 
                 // TODO Goal values might be different for each neuron
