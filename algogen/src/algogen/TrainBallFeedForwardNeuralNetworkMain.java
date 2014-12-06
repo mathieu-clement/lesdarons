@@ -1,40 +1,32 @@
 package algogen;
 
-import matlabcontrol.*;
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
 
-/*
-Needs library MatLab JMI wrapper
-https://code.google.com/p/matlabcontrol/
-*/
-
-public class TrainBallSingleNeuronMain {
+public class TrainBallFeedForwardNeuralNetworkMain {
     public static void main(String[] args) {
+        // NB: For now with one neuron inside the hidden layer
+        // NB: Except for data set 4, there is one output
+
         int goalValueMax = 1;
         int goalValueMin = 0;
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
-        double eta = 0.02; // choose freely
+        double eta = 0.02; // learning rate
         double goalSuccessRatio = 0.998;
-
-        MatlabProxy matlabProxy = null;
 
         BallDataFile ballDataFiles[] = new BallDataFile[2];
 
         try {
             ballDataFiles[0] = BallDataFile.open(
                     args.length >= 1 ? args[0] :
-                            "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
-                                    "neural_networks\\" +
-                                    "ballZEROdata.txt");
+                    "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
+                            "neural_networks\\" +
+                            "ballZEROdata.txt");
             ballDataFiles[1] = BallDataFile.open(
                     args.length >= 2 ? args[1] :
-                            "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
-                                    "neural_networks\\" +
-                                    "ballONEdata.txt");
+                    "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
+                            "neural_networks\\" +
+                            "ballONEdata.txt");
 
             double[][][] lines = new double[2][][];
             lines[0] = ballDataFiles[0].toArray();
@@ -43,7 +35,17 @@ public class TrainBallSingleNeuronMain {
 
             int totalPredictions = lines[0].length + lines[1].length;
 
-            Neuron neuron = new Neuron(nbInputs);
+            Neuron outputNeurons[] = new Neuron[1];
+            Neuron hiddenNeurons[] = new Neuron[nbInputs];
+            for (int i = 0; i < hiddenNeurons.length; i++) {
+                hiddenNeurons[i] = new Neuron(nbInputs);
+            }
+            for (int i = 0; i < outputNeurons.length; i++) {
+                outputNeurons[i] = new Neuron(hiddenNeurons.length);
+            }
+
+            double outputNeuronInputs[] = new double[hiddenNeurons.length];
+
             double successRatio = 0;
             int nbIter = 0;
 
@@ -53,7 +55,16 @@ public class TrainBallSingleNeuronMain {
                 for (int goalValue = 0; goalValue < lines.length; goalValue++) {
                     for (double[] pattern : lines[goalValue]) {
                         pattern = AlgoGenUtils.addColumn1(pattern);
-                        double y = neuron.update(pattern, goalValue, eta);
+
+                        double y = hiddenNeurons[0].update(pattern, goalValue, eta);
+
+                        for (int i = 0; i < outputNeuronInputs.length; i++) {
+                            outputNeuronInputs[i] = hiddenNeurons[i].update(pattern, goalValue, eta);
+                        }
+
+                        double z = outputNeurons[0].update(outputNeuronInputs, goalValue, eta);
+
+
                         if (goalValue == 0) {
                             if (y < 0.5) {
                                 nbGoodPredictions++;
@@ -70,26 +81,11 @@ public class TrainBallSingleNeuronMain {
                 }
             }
 
-            String weightsStr = Arrays.toString(neuron.getWeights());
-            System.out.println(weightsStr);
-
-            MatlabProxyFactoryOptions.Builder factoryOptionsBuilder = new MatlabProxyFactoryOptions.Builder();
-            factoryOptionsBuilder.setUsePreviouslyControlledSession(true);
-            factoryOptionsBuilder.setMatlabStartingDirectory(new File("C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\SN_Clement"));
-            MatlabProxyFactoryOptions matlabProxyFactoryOptions = factoryOptionsBuilder.build();
-
-            MatlabProxyFactory matlabProxyFactory = new MatlabProxyFactory(matlabProxyFactoryOptions);
-            matlabProxy = matlabProxyFactory.getProxy();
-
-            matlabProxy.eval("SingleNeuronCheck(" + weightsStr + ')');
-
+            // TODO
+            // Print weights of network
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (MatlabConnectionException e) {
-            e.printStackTrace();
-        } catch (MatlabInvocationException e) {
             e.printStackTrace();
         } finally {
             if (ballDataFiles[0] != null)
@@ -104,9 +100,6 @@ public class TrainBallSingleNeuronMain {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            if (matlabProxy != null) {
-                matlabProxy.disconnect();
-            }
         }
     }
 }

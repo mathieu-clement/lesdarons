@@ -16,7 +16,6 @@ public class Neuron {
     }
 
     // Returns y
-    // inputs doesn't have some kind of x0
     public double update(double inputs[], double t, double eta) {
         assert this.weights.length == inputs.length;
         assert inputs[0] == 1;
