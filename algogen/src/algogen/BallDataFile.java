@@ -41,7 +41,7 @@ public class BallDataFile extends File {
                     " instead of the constructor you used.");
     }
 
-    public double[][] toArray() throws IOException {
+    public double[][] readAsArray() throws IOException {
         checkProperConstructorCalled();
         ToArrayPatternCallback callback = new ToArrayPatternCallback();
         applyOnEachLine(callback);

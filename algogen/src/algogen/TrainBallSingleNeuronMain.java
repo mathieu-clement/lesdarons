@@ -37,8 +37,8 @@ public class TrainBallSingleNeuronMain {
                                     "ballONEdata.txt");
 
             double[][][] lines = new double[2][][];
-            lines[0] = ballDataFiles[0].toArray();
-            lines[1] = ballDataFiles[1].toArray();
+            lines[0] = ballDataFiles[0].readAsArray();
+            lines[1] = ballDataFiles[1].readAsArray();
             int nbInputs = lines[0][0].length;
 
             int totalPredictions = lines[0].length + lines[1].length;
