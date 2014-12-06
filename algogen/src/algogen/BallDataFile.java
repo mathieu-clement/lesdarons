@@ -108,12 +108,20 @@ public class BallDataFile extends File {
         }
     }
 
-    public void writeArrayToFile(double[][] arr) throws IOException {
+    public void writeArray(double[][] arr) throws IOException {
         for (double[] line : arr) {
             for (double col : line) {
-                writer.write(String.format("%04.9f ", col));
+                writeValue(col);
             }
             writer.newLine();
         }
+    }
+
+    public void writeValue(double d) throws IOException {
+        writer.write(String.format("%04.9f ", d));
+    }
+
+    public void writeNewLine() throws  IOException {
+        writer.newLine();
     }
 }

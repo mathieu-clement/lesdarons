@@ -15,18 +15,16 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
         double eta = 0.02; // learning rate
         double goalSuccessRatio = 0.998;
-        String WORKING_DIR = "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\NN_Clement";
+        String WORKING_DIR = "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\NN_Clement\\";
 
         // Program
-        BallDataFile ballDataFiles[] = new BallDataFile[2];
+        BallDataFile ballDataFiles[] = new BallDataFile[4];
 
         try {
             // ZERO data (or ONE data)
             ballDataFiles[0] = BallDataFile.openForReading(
                     args.length >= 1 ? args[0] :
-                            "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
-                                    "neural_networks\\" +
-                                    "ballZEROdata.txt");
+                            WORKING_DIR + "ballZEROdata.txt");
             // ONE data (or ZERO data)
             ballDataFiles[1] = BallDataFile.openForReading(
                     args.length >= 2 ? args[1] :
@@ -35,6 +33,10 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             ballDataFiles[2] = BallDataFile.openForReading(
                     args.length >= 3 ? args[2] :
                             WORKING_DIR + "balltestdata.txt");
+            // balleval.txt
+            ballDataFiles[3] = BallDataFile.openForWriting(
+                    args.length >= 4 ? args[3] :
+                            WORKING_DIR + "balleval.txt");
 
 
             double[][][] lines = new double[2][][];
@@ -53,10 +55,14 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                 outputNeurons[i] = new Neuron(hiddenNeurons.length);
             }
 
-            double hiddenNeuronsOutputs[] = new double[hiddenNeurons.length+1];
-            double hiddenNeuronsErrors[] = new double[hiddenNeurons.length+1];
-            double outputNeuronsOutputs[] = new double[outputNeurons.length+1];
-            double outputNeuronsErrors[] = new double[outputNeurons.length+1];
+            /*****************************
+             *         TRAINING          *
+             *****************************/
+
+            double hiddenNeuronsOutputs[] = new double[hiddenNeurons.length + 1];
+            double hiddenNeuronsErrors[] = new double[hiddenNeurons.length + 1];
+            double outputNeuronsOutputs[] = new double[outputNeurons.length + 1];
+            double outputNeuronsErrors[] = new double[outputNeurons.length + 1];
 
             double successRatio = 0;
             int nbIter = 0;
@@ -160,6 +166,43 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
             System.out.println("Output layer:");
             printLayerWeights(outputNeurons);
+
+            /*****************************
+             *        EVALUATION         *
+             *****************************/
+            BallDataFile testDataFile = ballDataFiles[2];
+
+            BallDataFile ballEvalDataFile = ballDataFiles[3];
+
+            System.out.print("Reading test data file...  ");
+            double[][] evaluationPatterns = testDataFile.readAsArray();
+            System.out.println("OK");
+            assert evaluationPatterns[0].length == nbInputs; // different nb of inputs for training and evaluation
+
+            for (int p = 0; p < evaluationPatterns.length; p++) {
+                // x0 = 1
+                double inputs[] = AlgoGenUtils.addColumn1(evaluationPatterns[p]);
+
+                // Outputs of first layers
+
+                double[] hiddenLayerOutputs = new double[hiddenNeurons.length];
+                for (int i = 0; i < hiddenNeurons.length; i++) {
+                    hiddenLayerOutputs[i] = hiddenNeurons[i].calculateOutput(inputs);
+                }
+
+                // Feed to output neurons
+                for (int i = 0; i < outputNeurons.length; i++) {
+                    double neuronOutput = outputNeurons[i].calculateOutput(AlgoGenUtils.addColumn1(hiddenLayerOutputs));
+                    ballEvalDataFile.writeValue(neuronOutput);
+                }
+
+                ballEvalDataFile.writeNewLine();
+
+                if (p % 100 == 0)
+                    System.out.printf("\r%8d / %8d patterns evaluated", p + 1, evaluationPatterns.length);
+            }
+
+            System.out.printf("\r%8d / %8d%n patterns evaluated", evaluationPatterns.length, evaluationPatterns.length);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
