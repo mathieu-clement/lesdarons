@@ -1,29 +1,48 @@
 package algogen;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class BallDataFile {
+public class BallDataFile extends File {
 
-    private final BufferedReader reader;
+    private BufferedReader reader;
+    private BufferedWriter writer;
 
-    private BallDataFile(String filename) throws FileNotFoundException {
-        reader = new BufferedReader(new FileReader(filename));
+    private boolean constructorCalledFromHere = false;
+
+    public BallDataFile(String pathname) throws IOException {
+        super(pathname);
     }
 
-    public static BallDataFile open(String filename) throws FileNotFoundException {
-        return new BallDataFile(filename);
+    public static BallDataFile openForReading(String filename) throws IOException {
+        BallDataFile ballDataFile = new BallDataFile(filename);
+        ballDataFile.reader = new BufferedReader(new FileReader(filename));
+        ballDataFile.constructorCalledFromHere = true;
+        return ballDataFile;
+    }
+
+    public static BallDataFile openForWriting(String filename) throws IOException {
+        BallDataFile ballDataFile = new BallDataFile(filename);
+        ballDataFile.writer = new BufferedWriter(new FileWriter(filename));
+        ballDataFile.constructorCalledFromHere = true;
+        return ballDataFile;
     }
 
     public void close() throws IOException {
+        checkProperConstructorCalled();
         reader.close();
     }
 
+    private void checkProperConstructorCalled() throws IllegalAccessError {
+        if (!constructorCalledFromHere)
+            throw new IllegalAccessError("Call BallDataFile.openForReading()" +
+                    " or BallDataFile.openForWriting()" +
+                    " instead of the constructor you used.");
+    }
+
     public double[][] toArray() throws IOException {
+        checkProperConstructorCalled();
         ToArrayPatternCallback callback = new ToArrayPatternCallback();
         applyOnEachLine(callback);
         return callback.getResults();

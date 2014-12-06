@@ -25,12 +25,12 @@ public class TrainBallSingleNeuronMain {
         BallDataFile ballDataFiles[] = new BallDataFile[2];
 
         try {
-            ballDataFiles[0] = BallDataFile.open(
+            ballDataFiles[0] = BallDataFile.openForReading(
                     args.length >= 1 ? args[0] :
                             "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
                                     "neural_networks\\" +
                                     "ballZEROdata.txt");
-            ballDataFiles[1] = BallDataFile.open(
+            ballDataFiles[1] = BallDataFile.openForReading(
                     args.length >= 2 ? args[1] :
                             "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
                                     "neural_networks\\" +

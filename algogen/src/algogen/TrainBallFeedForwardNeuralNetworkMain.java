@@ -15,21 +15,27 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
         double eta = 0.02; // learning rate
         double goalSuccessRatio = 0.998;
+        String WORKING_DIR = "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\NN_Clement";
 
         // Program
         BallDataFile ballDataFiles[] = new BallDataFile[2];
 
         try {
-            ballDataFiles[0] = BallDataFile.open(
+            // ZERO data (or ONE data)
+            ballDataFiles[0] = BallDataFile.openForReading(
                     args.length >= 1 ? args[0] :
                             "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
                                     "neural_networks\\" +
                                     "ballZEROdata.txt");
-            ballDataFiles[1] = BallDataFile.open(
+            // ONE data (or ZERO data)
+            ballDataFiles[1] = BallDataFile.openForReading(
                     args.length >= 2 ? args[1] :
-                            "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
-                                    "neural_networks\\" +
-                                    "ballONEdata.txt");
+                            WORKING_DIR + "ballONEdata.txt");
+            // balltestdata.txt
+            ballDataFiles[2] = BallDataFile.openForReading(
+                    args.length >= 3 ? args[2] :
+                            WORKING_DIR + "balltestdata.txt");
+
 
             double[][][] lines = new double[2][][];
             lines[0] = ballDataFiles[0].toArray();
