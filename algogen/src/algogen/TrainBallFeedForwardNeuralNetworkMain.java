@@ -141,8 +141,8 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                             for (int i = 0; i < inputs.length; i++) {
                                 double oldWeight = hiddenNeurons[m].getWeightsNoModifyPlease()[i];
                                 double newWeight = oldWeight;
-                                double zn = hiddenNeuronsOutputsWithY0[m];
-                                newWeight += eta * hiddenNeuronsErrors[m] * (zn * (1 - zn)) * inputs[i];
+                                double ym = hiddenNeuronsOutputsWithY0[m];
+                                newWeight += eta * hiddenNeuronsErrors[m] * (ym * (1 - ym)) * inputs[i];
                                 hiddenNeurons[m].setWeight(i, newWeight);
                             }
                         }
