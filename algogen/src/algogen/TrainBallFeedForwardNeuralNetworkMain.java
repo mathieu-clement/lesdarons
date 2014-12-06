@@ -13,9 +13,9 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
         // Parameters you can change
         int nbIterMax = 50000;
-        double goalSuccessRatio = 0.998;
+        double goalSuccessRatio = 0.995;
         double eta = 0.01; // learning rate
-        int nbHiddenNeurons = 3;
+        int nbHiddenNeurons = 3; // >= nbInputs
         int nbOutputNeurons = 1;
         int goalValueMax = 1;
         int goalValueMin = 0;
