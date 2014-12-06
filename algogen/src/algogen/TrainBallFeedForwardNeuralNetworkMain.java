@@ -198,11 +198,11 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
                 ballEvalDataFile.writeNewLine();
 
-                if (p % 100 == 0)
+                if (p % 1000 == 0)
                     System.out.printf("\r%8d / %8d patterns evaluated", p + 1, evaluationPatterns.length);
             }
 
-            System.out.printf("\r%8d / %8d%n patterns evaluated", evaluationPatterns.length, evaluationPatterns.length);
+            System.out.printf("\r%8d / %8d patterns evaluated%n", evaluationPatterns.length, evaluationPatterns.length);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

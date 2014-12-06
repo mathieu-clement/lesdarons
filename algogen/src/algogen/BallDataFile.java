@@ -2,7 +2,7 @@ package algogen;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class BallDataFile extends File {
 
@@ -12,13 +12,11 @@ public class BallDataFile extends File {
     private boolean constructorCalledFromHere = false;
 
     /**
-     * @deprecated
-     * Do NOT call this constructor.
-     * Use {@link #openForReading(String)} or
-     * {@link #openForWriting(String)} instead.
-     *
      * @param pathname do not use
      * @throws IOException do not worry about that
+     * @deprecated Do NOT call this constructor.
+     * Use {@link #openForReading(String)} or
+     * {@link #openForWriting(String)} instead.
      */
     public BallDataFile(String pathname) throws IOException {
         super(pathname);
@@ -87,20 +85,20 @@ public class BallDataFile extends File {
         String line;
         while ((line = reader.readLine()) != null) {
             lineNumber++;
-            Scanner scanner = new Scanner(line);
+            StringTokenizer tokenizer = new StringTokenizer(line);
 
             double inputs[];
 
             if (lineNumber != 1) {
                 inputs = new double[nbInputs];
                 for (int i = 0; i < nbInputs; i++) {
-                    inputs[i] = scanner.nextDouble();
+                    inputs[i] = Double.parseDouble(tokenizer.nextToken());
                 }
             } else {
                 inputs = new double[1];
-                while (scanner.hasNextDouble()) {
+                while (tokenizer.hasMoreTokens()) {
                     inputs = Arrays.copyOf(inputs, nbInputs + 1);
-                    inputs[nbInputs] = scanner.nextDouble();
+                    inputs[nbInputs] = Double.parseDouble(tokenizer.nextToken());
                     nbInputs++;
                 }
             }
@@ -121,7 +119,7 @@ public class BallDataFile extends File {
         writer.write(String.format("%04.9f ", d));
     }
 
-    public void writeNewLine() throws  IOException {
+    public void writeNewLine() throws IOException {
         writer.newLine();
     }
 }
