@@ -66,11 +66,11 @@ public class TrainBallSingleNeuronMain {
                             }
                         }
                     }
-                    System.out.printf("%5d %.5f%n", nbIter, successRatio);
+                    //System.out.printf("%5d %.5f%n", nbIter, successRatio);
                 }
             }
 
-            String weightsStr = Arrays.toString(neuron.getWeights());
+            String weightsStr = Arrays.toString(neuron.getWeightsNoModifyPlease());
             System.out.println(weightsStr);
 
             System.out.println("Starting Matlab...");
@@ -83,7 +83,7 @@ public class TrainBallSingleNeuronMain {
             MatlabProxyFactory matlabProxyFactory = new MatlabProxyFactory(matlabProxyFactoryOptions);
             matlabProxy = matlabProxyFactory.getProxy();
 
-            System.out.println("Make sure Matlab is started and press [Enter]");
+            System.out.println("Make sure Matlab is started in the correct directory and press [Enter]");
             System.in.read();
 
             matlabProxy.eval("SingleNeuronCheck(" + weightsStr + ')');
