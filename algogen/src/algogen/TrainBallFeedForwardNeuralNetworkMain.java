@@ -65,7 +65,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             int nbIter = 0;
 
             iter_loop:
-            while (nbIter++ < maxEpochs) {
+            while (successRatio < goalSuccessRatio && nbIter++ < maxEpochs) {
 
                 int nbGoodPredictions = 0;
 
