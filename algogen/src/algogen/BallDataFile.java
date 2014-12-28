@@ -58,7 +58,8 @@ public class BallDataFile extends File {
         return callback.getResults();
     }
 
-    public void read(double[][] inputs, double[][] outputs) throws IOException {
+    // Returns [inputs, outputs]
+    public double[][][] read() throws IOException {
         checkProperConstructorCalled();
         ReadArrayPatternCallback inputsCallback = new ReadArrayPatternCallback();
         ReadArrayPatternCallback outputsCallback = new ReadArrayPatternCallback();
@@ -73,8 +74,7 @@ public class BallDataFile extends File {
         applyOnEachLineFann(nbInputs, nbOutputs,
                 inputsCallback, outputsCallback);
 
-        inputs = inputsCallback.getResults();
-        outputs = outputsCallback.getResults();
+        return new double[][][]{inputsCallback.getResults(), outputsCallback.getResults()};
     }
 
     private static class ReadArrayPatternCallback implements PatternCallback {
