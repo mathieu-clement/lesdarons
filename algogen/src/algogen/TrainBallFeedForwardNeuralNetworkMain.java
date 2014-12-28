@@ -16,7 +16,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 9; // >= nbInputs
         int goalValueMax = 1; // is ignored when calculating good predictions ratio
-        int goalValueMin = 0;
+        int goalValueMin = 0; // If you set this to -1 you need to use Sigmoid Symmetric...
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
         String WORKING_DIR = "/home/mathieu/ownCloud/EIA-FR/cours/3eme/AlgoGen/NN_Clement/";
 
