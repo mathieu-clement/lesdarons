@@ -9,7 +9,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
         // Parameters you can change
         int nbIterMax = 120000;
-        double goalSuccessRatio = 0.998;
+        double goalSuccessRatio = 0.997;
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 9; // >= nbInputs
         int nbOutputNeurons = 1;
@@ -208,9 +208,16 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             System.out.println();
 
             ballEvalDataFile.close();
+
+            // Execute octave
+            String cmd="konsole --workdir " + WORKING_DIR + " -e octave NeuralNetworkCheck_octave.m";
+            Process child = Runtime.getRuntime().exec(cmd);
+            child.waitFor();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             for (BallDataFile ballDataFile : ballDataFiles) {
