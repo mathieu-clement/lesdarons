@@ -3,7 +3,7 @@ package algogen;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class TrainBallFeedForwardNeuralNetworkMain {
+public class FeedForwardNNTrainAndEvaluateMain {
     public static void main(String[] args) {
         // NB: Except for data set 4, there is one output
 
