@@ -10,6 +10,8 @@ public class BallDataFile extends File {
     private BufferedWriter writer;
 
     private boolean constructorCalledFromHere = false;
+    private int nbInputs = -1;
+    private int nbOutputs = -1;
 
     /**
      * @param pathname do not use
@@ -68,8 +70,8 @@ public class BallDataFile extends File {
         // Must be the second and third number of the first line of the file
         StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
         tokenizer.nextToken(); // ignore number of samples
-        int nbInputs = Integer.parseInt(tokenizer.nextToken());
-        int nbOutputs = Integer.parseInt(tokenizer.nextToken());
+        nbInputs = Integer.parseInt(tokenizer.nextToken());
+        nbOutputs = Integer.parseInt(tokenizer.nextToken());
 
         applyOnEachLineFann(nbInputs, nbOutputs,
                 inputsCallback, outputsCallback);
@@ -170,5 +172,13 @@ public class BallDataFile extends File {
 
     public void writeNewLine() throws IOException {
         writer.newLine();
+    }
+
+    public int getNbOutputs() {
+        return nbOutputs;
+    }
+
+    public int getNbInputs() {
+        return nbInputs;
     }
 }

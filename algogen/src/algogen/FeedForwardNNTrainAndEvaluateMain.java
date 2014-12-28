@@ -8,13 +8,16 @@ public class FeedForwardNNTrainAndEvaluateMain {
         // NB: Except for data set 4, there is one output
 
         // Parameters you can change
-        int nbInputs = 3;
-        int nbOutputNeurons = 1;
+        //int nbInputs = 3; // => read from file
+        //int nbOutputNeurons = 1; // => read from file
         int maxEpochs = 300000;
-        int epochsBetweenReports = 1000;
+        int epochsBetweenReports = 1;
         double goalSuccessRatio = 0.996;
         double eta = 0.01; // learning rate
-        int nbHiddenNeurons = 9; // >= nbInputs
+        int nbHiddenNeurons = 50; // >= nbInputs
+
+
+
         int goalValueMax = 1; // is ignored when calculating good predictions ratio
         int goalValueMin = 0; // If you set this to -1 you need to use Sigmoid Symmetric...
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
@@ -28,6 +31,7 @@ public class FeedForwardNNTrainAndEvaluateMain {
             ballDataFiles[0] = BallDataFile.openForReading(
                     args.length >= 1 ? args[0] :
                             WORKING_DIR + "/fann_training.dat");
+
             // balltestdata.txt
             ballDataFiles[1] = BallDataFile.openForReading(
                     args.length >= 2 ? args[1] :
@@ -38,6 +42,13 @@ public class FeedForwardNNTrainAndEvaluateMain {
                             WORKING_DIR + "/balleval.txt");
 
             double[][][] dta = ballDataFiles[0].read();
+
+            int nbInputs = ballDataFiles[0].getNbInputs();
+            if(nbHiddenNeurons < nbInputs) {
+                System.err.println("Number of hidden neurons < Number of inputs");
+                System.exit(1);
+            }
+            int nbOutputNeurons = ballDataFiles[0].getNbOutputs();
 
             double[][] allInputs = dta[0];
             int totalPredictions = allInputs.length * nbOutputNeurons;
