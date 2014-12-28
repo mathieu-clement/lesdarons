@@ -9,8 +9,9 @@ public class TrainBallFeedForwardNeuralNetworkMain {
 
         // Parameters you can change
         int nbInputs = 3;
-        int nbOutputNeurons = 1; // TODO
-        int nbIterMax = 300000;
+        int nbOutputNeurons = 1;
+        int maxEpochs = 300000;
+        int epochsBetweenReports = 1000;
         double goalSuccessRatio = 0.998;
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 9; // >= nbInputs
@@ -63,7 +64,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             double successRatio = 0;
             int nbIter = 0;
 
-            while (successRatio < goalSuccessRatio && nbIter++ < nbIterMax) {
+            while (successRatio < goalSuccessRatio && nbIter++ < maxEpochs) {
                 int nbGoodPredictions = 0;
 
                 for (int ai = 0; ai < allInputs.length; ai++) {
@@ -156,7 +157,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                         }
                     }
                 }
-                if (nbIter % 1000 == 0)
+                if (nbIter % epochsBetweenReports == 0)
                     System.out.printf("%5d %.5f%n", nbIter, successRatio);
             }
 
