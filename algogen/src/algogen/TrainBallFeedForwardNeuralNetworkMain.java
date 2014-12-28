@@ -11,7 +11,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         int nbInputs = 3;
         int nbOutputNeurons = 1; // TODO
         int nbIterMax = 300000;
-        double goalSuccessRatio = 0.997;
+        double goalSuccessRatio = 0.998;
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 9; // >= nbInputs
         int goalValueMax = 1; // is ignored when calculating good predictions ratio
@@ -172,9 +172,9 @@ public class TrainBallFeedForwardNeuralNetworkMain {
              *****************************/
             if (!System.getProperty("evaluation_enabled", "true").equals("true")) return;
 
-            BallDataFile testDataFile = ballDataFiles[2];
+            BallDataFile testDataFile = ballDataFiles[1];
 
-            BallDataFile ballEvalDataFile = ballDataFiles[3];
+            BallDataFile ballEvalDataFile = ballDataFiles[2];
 
             System.out.print("Reading test data file...  ");
             double[][] evaluationPatterns = testDataFile.readAsArray();
