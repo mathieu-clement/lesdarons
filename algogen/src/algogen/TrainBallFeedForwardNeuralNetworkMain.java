@@ -12,7 +12,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         int nbOutputNeurons = 1;
         int maxEpochs = 300000;
         int epochsBetweenReports = 1000;
-        double goalSuccessRatio = 0.998;
+        double goalSuccessRatio = 0.996;
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 9; // >= nbInputs
         int goalValueMax = 1; // is ignored when calculating good predictions ratio
@@ -40,7 +40,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             double[][][] dta = ballDataFiles[0].read();
 
             double[][] allInputs = dta[0];
-            int totalPredictions = allInputs.length;
+            int totalPredictions = allInputs.length * nbOutputNeurons;
             double[][] allOutputs = dta[1];
 
             Neuron outputNeurons[] = new Neuron[nbOutputNeurons];
@@ -64,7 +64,9 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             double successRatio = 0;
             int nbIter = 0;
 
-            while (successRatio < goalSuccessRatio && nbIter++ < maxEpochs) {
+            iter_loop:
+            while (nbIter++ < maxEpochs) {
+
                 int nbGoodPredictions = 0;
 
                 for (int ai = 0; ai < allInputs.length; ai++) {
@@ -155,11 +157,11 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                                 successRatio = (double) nbGoodPredictions / totalPredictions;
                             }
                         }
-                    }
-                }
+                    } // output neurons
+                } // inputs
                 if (nbIter % epochsBetweenReports == 0)
                     System.out.printf("%5d %.5f%n", nbIter, successRatio);
-            }
+            } // iter
 
             // Print weights of network
             System.out.println("Hidden layer:");
