@@ -18,7 +18,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         int goalValueMax = 1; // is ignored when calculating good predictions ratio
         int goalValueMin = 0;
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
-        String WORKING_DIR = "/home/mathieu/Dropbox/LesDarons/AlgoGen/NN_Clement/";
+        String WORKING_DIR = "/home/mathieu/ownCloud/EIA-FR/cours/3eme/AlgoGen/NN_Clement/";
 
         // Program
         BallDataFile ballDataFiles[] = new BallDataFile[3];
