@@ -5,17 +5,33 @@ import java.io.IOException;
 
 public class FeedForwardNNTrainAndEvaluateMain {
     public static void main(String[] args) {
-        // NB: Except for data set 4, there is one output
-
+        // ---------------------------------
         // Parameters you can change
-        //int nbInputs = 3; // => read from file
-        //int nbOutputNeurons = 1; // => read from file
+
+        // First argument is the training_data file in the format described
+        // here after.
+
+        // Nb of inputs and Nb of outputs are read from the training file
+        // (first line of the training data must be nbSamples nbInputs nbOutputs)
+        // Then the file alternates between one line of inputs
+        // and one line of outputs.
+
+        // You use these VM options:
+        // -Devaluation_enabled=false
+        //      to disable evaluation after training
+        // -Dactivation_function=sigmoid_symmetric
+        //      for values [-1 +1] instead of [0 1]                                               [ 0  1]
+
         int maxEpochs = 300000;
         int epochsBetweenReports = 1;
-        double goalSuccessRatio = 0.996;
-        double eta = 0.01; // learning rate
-        int nbHiddenNeurons = 50; // >= nbInputs
+        double goalSuccessRatio = 0.88;
+        double eta = 0.1; // learning rate
+        int nbHiddenNeurons = 100; // >= nbInputs
 
+        // End of parameters you can change
+        // ---------------------------------
+
+        // For the test with dataset 0
         String WORKING_DIR = "/home/mathieu/ownCloud/EIA-FR/cours/3eme/AlgoGen/NN_Clement/";
 
         // Program
