@@ -8,44 +8,39 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         // NB: Except for data set 4, there is one output
 
         // Parameters you can change
-        int nbIterMax = 500000;
+        int nbInputs = 3;
+        int nbOutputNeurons = 1; // TODO
+        int nbIterMax = 300000;
         double goalSuccessRatio = 0.997;
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 9; // >= nbInputs
-        int nbOutputNeurons = 1;
         int goalValueMax = 1; // is ignored when calculating good predictions ratio
         int goalValueMin = 0;
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
         String WORKING_DIR = "/home/mathieu/Dropbox/LesDarons/AlgoGen/NN_Clement/";
 
         // Program
-        BallDataFile ballDataFiles[] = new BallDataFile[4];
+        BallDataFile ballDataFiles[] = new BallDataFile[3];
 
         try {
-            // ZERO data (or ONE data)
+            // Training data, same format than the one used by popular AAN libraries (PHP, FANN, etc.)
             ballDataFiles[0] = BallDataFile.openForReading(
                     args.length >= 1 ? args[0] :
-                            WORKING_DIR + "/ballZEROdata.txt");
-            // ONE data (or ZERO data)
+                            WORKING_DIR + "/fann_training.dat");
+            // balltestdata.txt
             ballDataFiles[1] = BallDataFile.openForReading(
                     args.length >= 2 ? args[1] :
-                            WORKING_DIR + "/ballONEdata.txt");
-            // balltestdata.txt
-            ballDataFiles[2] = BallDataFile.openForReading(
-                    args.length >= 3 ? args[2] :
                             WORKING_DIR + "/balltestdata.txt");
             // balleval.txt
-            ballDataFiles[3] = BallDataFile.openForWriting(
-                    args.length >= 4 ? args[3] :
+            ballDataFiles[2] = BallDataFile.openForWriting(
+                    args.length >= 3 ? args[2] :
                             WORKING_DIR + "/balleval.txt");
 
+            double[][][] dta = ballDataFiles[0].read();
 
-            double[][][] lines = new double[2][][];
-            lines[0] = ballDataFiles[0].readAsArray();
-            lines[1] = ballDataFiles[1].readAsArray();
-            int nbInputs = lines[0][0].length;
-
-            int totalPredictions = lines[0].length + lines[1].length;
+            double[][] allInputs = dta[0];
+            int totalPredictions = allInputs.length;
+            double[][] allOutputs = dta[1];
 
             Neuron outputNeurons[] = new Neuron[nbOutputNeurons];
             Neuron hiddenNeurons[] = new Neuron[nbHiddenNeurons];
@@ -71,80 +66,83 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             while (successRatio < goalSuccessRatio && nbIter++ < nbIterMax) {
                 int nbGoodPredictions = 0;
 
-                // TODO Goal values might be different for each neuron
-                for (int goalValue = 0; goalValue < lines.length; goalValue++) {
-                    for (double[] pattern : lines[goalValue]) {
-                        double inputs[] = AlgoGenUtils.addColumn1(pattern);
+                for (int ai = 0; ai < allInputs.length; ai++) {
+                    double[] pattern = allInputs[ai];
 
-                        // -------------------------------------
-                        // Forward-Propagation of input
-                        // -------------------------------------
+                    double inputsLine[] = AlgoGenUtils.addColumn1(pattern);
+                    double[] outputsLine = allOutputs[ai];
 
-                        // yh
-                        for (int h = 0; h < hiddenNeurons.length; h++) {
-                            hiddenNeuronsOutputs[h] = hiddenNeurons[h].calculateOutput(inputs);
-                        }
+                    // -------------------------------------
+                    // Forward-Propagation of input
+                    // -------------------------------------
 
-                        // zs
+                    // yh
+                    for (int h = 0; h < hiddenNeurons.length; h++) {
+                        hiddenNeuronsOutputs[h] = hiddenNeurons[h].calculateOutput(inputsLine);
+                    }
+
+                    // zs
+                    for (int s = 0; s < outputNeurons.length; s++) {
+                        outputNeuronsOutputs[s] = outputNeurons[s].calculateOutput(AlgoGenUtils.addColumn1(hiddenNeuronsOutputs));
+                    }
+
+                    // -------------------------------------
+                    // Back-Propagation of error
+                    // -------------------------------------
+
+                    // es
+                    for (int s = 0; s < outputNeurons.length; s++) {
+                        outputNeuronsErrors[s] = outputsLine[s] - outputNeuronsOutputs[s];
+                    }
+
+                    // dh
+                    for (int h = 0; h < hiddenNeurons.length; h++) {
+                        double sum = 0.0;
                         for (int s = 0; s < outputNeurons.length; s++) {
-                            outputNeuronsOutputs[s] = outputNeurons[s].calculateOutput(AlgoGenUtils.addColumn1(hiddenNeuronsOutputs));
+                            double zs = outputNeuronsOutputs[s];
+                            sum += outputNeuronsErrors[s] * (zs * (1 - zs)) *
+                                    outputNeurons[s].getWeightsNoModifyPlease()[h];
                         }
+                        hiddenNeuronsErrors[h] = sum;
+                    }
 
-                        // -------------------------------------
-                        // Back-Propagation of error
-                        // -------------------------------------
+                    // -------------------------------------
+                    // Update all weights
+                    // -------------------------------------
 
-                        // es
-                        for (int s = 0; s < outputNeurons.length; s++) {
-                            outputNeuronsErrors[s] = goalValue - outputNeuronsOutputs[s];
+                    // y0 = 1
+                    double hiddenNeuronsOutputsWithY0[] = AlgoGenUtils.addColumn1(hiddenNeuronsOutputs);
+
+                    // x0 = 1 already done (inputsLine is [1 x1 x2 x3...])
+
+                    // wjn
+                    for (int n = 0; n < outputNeurons.length; n++) {
+                        for (int j = 0; j < inputsLine.length; j++) {
+                            double oldWeight = outputNeurons[n].getWeightsNoModifyPlease()[j];
+                            double newWeight = oldWeight;
+                            double zn = outputNeuronsOutputs[n];
+                            newWeight += eta * outputNeuronsErrors[n] * (zn * (1 - zn)) * hiddenNeuronsOutputsWithY0[j];
+                            outputNeurons[n].setWeight(j, newWeight);
                         }
+                    }
 
-                        // dh
-                        for (int h = 0; h < hiddenNeurons.length; h++) {
-                            double sum = 0.0;
-                            for (int s = 0; s < outputNeurons.length; s++) {
-                                double zs = outputNeuronsOutputs[s];
-                                sum += outputNeuronsErrors[s] * (zs * (1 - zs)) *
-                                        outputNeurons[s].getWeightsNoModifyPlease()[h];
-                            }
-                            hiddenNeuronsErrors[h] = sum;
+                    // vim
+                    for (int m = 0; m < outputNeurons.length; m++) {
+                        for (int i = 0; i < inputsLine.length; i++) {
+                            double oldWeight = hiddenNeurons[m].getWeightsNoModifyPlease()[i];
+                            double newWeight = oldWeight;
+                            double ym = hiddenNeuronsOutputsWithY0[m];
+                            newWeight += eta * hiddenNeuronsErrors[m] * (ym * (1 - ym)) * inputsLine[i];
+                            hiddenNeurons[m].setWeight(i, newWeight);
                         }
+                    }
 
-                        // -------------------------------------
-                        // Update all weights
-                        // -------------------------------------
 
-                        // y0 = 1
-                        double hiddenNeuronsOutputsWithY0[] = AlgoGenUtils.addColumn1(hiddenNeuronsOutputs);
+                    for (int o = 0; o < outputNeurons.length; o++) {
+                        double actualOutput = outputNeurons[o].calculateOutput(hiddenNeuronsOutputsWithY0);
+                        double goalValue = outputsLine[o];
 
-                        // x0 = 1 already done (inputs is [1 x1 x2 x3...])
-
-                        // wjn
-                        for (int n = 0; n < outputNeurons.length; n++) {
-                            for (int j = 0; j < inputs.length; j++) {
-                                double oldWeight = outputNeurons[n].getWeightsNoModifyPlease()[j];
-                                double newWeight = oldWeight;
-                                double zn = outputNeuronsOutputs[n];
-                                newWeight += eta * outputNeuronsErrors[n] * (zn * (1 - zn)) * hiddenNeuronsOutputsWithY0[j];
-                                outputNeurons[n].setWeight(j, newWeight);
-                            }
-                        }
-
-                        // vim
-                        for (int m = 0; m < outputNeurons.length; m++) {
-                            for (int i = 0; i < inputs.length; i++) {
-                                double oldWeight = hiddenNeurons[m].getWeightsNoModifyPlease()[i];
-                                double newWeight = oldWeight;
-                                double ym = hiddenNeuronsOutputsWithY0[m];
-                                newWeight += eta * hiddenNeuronsErrors[m] * (ym * (1 - ym)) * inputs[i];
-                                hiddenNeurons[m].setWeight(i, newWeight);
-                            }
-                        }
-
-                        // TODO Change for multiple output neurons
-
-                        double actualOutput = outputNeurons[0].calculateOutput(hiddenNeuronsOutputsWithY0);
-
+                        // TODO Change for outputs other than 0 or 1
                         if (goalValue == 0) {
                             if (actualOutput < 0.5) {
                                 nbGoodPredictions++;
@@ -157,9 +155,9 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                             }
                         }
                     }
-                    if (nbIter % 1000 == 0)
-                        System.out.printf("%5d %.5f%n", nbIter, successRatio);
                 }
+                if (nbIter % 1000 == 0)
+                    System.out.printf("%5d %.5f%n", nbIter, successRatio);
             }
 
             // Print weights of network
