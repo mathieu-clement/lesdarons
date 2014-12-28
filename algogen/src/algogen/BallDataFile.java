@@ -117,7 +117,7 @@ public class BallDataFile extends File {
                 inputsCallback.onEachPattern(inputs);
             } else {
                 outputs = new double[nbOutputs];
-                for (int i = 0; i < nbInputs; i++) {
+                for (int i = 0; i < nbOutputs; i++) {
                     outputs[i] = Double.parseDouble(tokenizer.nextToken());
                 }
                 outputsCallback.onEachPattern(outputs);
