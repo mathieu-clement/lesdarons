@@ -58,6 +58,25 @@ public class BallDataFile extends File {
         return callback.getResults();
     }
 
+    public void read(double[][] inputs, double[][] outputs) throws IOException {
+        checkProperConstructorCalled();
+        ReadArrayPatternCallback inputsCallback = new ReadArrayPatternCallback();
+        ReadArrayPatternCallback outputsCallback = new ReadArrayPatternCallback();
+
+        // Find out number of inputs and outputs
+        // Must be the second and third number of the first line of the file
+        StringTokenizer tokenizer = new StringTokenizer(reader.readLine());
+        tokenizer.nextToken(); // ignore number of samples
+        int nbInputs = Integer.parseInt(tokenizer.nextToken());
+        int nbOutputs = Integer.parseInt(tokenizer.nextToken());
+
+        applyOnEachLineFann(nbInputs, nbOutputs,
+                inputsCallback, outputsCallback);
+
+        inputs = inputsCallback.getResults();
+        outputs = outputsCallback.getResults();
+    }
+
     private static class ReadArrayPatternCallback implements PatternCallback {
 
         private double results[][] = new double[2][];
@@ -73,6 +92,36 @@ public class BallDataFile extends File {
                 results = Arrays.copyOf(results, results.length * 2);
             }
             results[crtIndex++] = inputs;
+        }
+    }
+
+    // Read all lines, parse them as double and call "callback" on each line
+    // Is memory-friendly
+    // It supposes it starts on an input line (see FANN or PHP AAN format)
+    public void applyOnEachLineFann(int nbInputs, int nbOutputs,
+                                    PatternCallback inputsCallback, PatternCallback outputsCallback) throws IOException {
+        int lineNumber = 0;
+        double[] inputs = new double[nbInputs];
+        double[] outputs = new double[nbOutputs];
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lineNumber++;
+            StringTokenizer tokenizer = new StringTokenizer(line);
+
+            if ((lineNumber & 0x1) == 1) {
+                inputs = new double[nbInputs];
+                for (int i = 0; i < nbInputs; i++) {
+                    inputs[i] = Double.parseDouble(tokenizer.nextToken());
+                }
+                inputsCallback.onEachPattern(inputs);
+            } else {
+                outputs = new double[nbOutputs];
+                for (int i = 0; i < nbInputs; i++) {
+                    outputs[i] = Double.parseDouble(tokenizer.nextToken());
+                }
+                outputsCallback.onEachPattern(outputs);
+            }
         }
     }
 
