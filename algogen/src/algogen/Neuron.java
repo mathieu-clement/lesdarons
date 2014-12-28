@@ -30,8 +30,14 @@ public class Neuron {
         assert this.weights.length == inputs.length;
         assert inputs[0] == 1;
 
-        double y = AlgoGenUtils.sigmoid(AlgoGenUtils.dotProduct(this.weights, inputs));
-        return y;
+        // also known as s*x
+        double dotProduct = AlgoGenUtils.dotProduct(this.weights, inputs);
+
+        if("sigmoid_symmetric".equals(System.getProperty("activation_function"))) {
+            return AlgoGenUtils.sigmoidSymmetric(dotProduct);
+        } else{
+            return AlgoGenUtils.sigmoid(dotProduct);
+        }
     }
 
     // Returns a copy

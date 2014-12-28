@@ -16,11 +16,6 @@ public class FeedForwardNNTrainAndEvaluateMain {
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 50; // >= nbInputs
 
-
-
-        int goalValueMax = 1; // is ignored when calculating good predictions ratio
-        int goalValueMin = 0; // If you set this to -1 you need to use Sigmoid Symmetric...
-        double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
         String WORKING_DIR = "/home/mathieu/ownCloud/EIA-FR/cours/3eme/AlgoGen/NN_Clement/";
 
         // Program
@@ -44,7 +39,7 @@ public class FeedForwardNNTrainAndEvaluateMain {
             double[][][] dta = ballDataFiles[0].read();
 
             int nbInputs = ballDataFiles[0].getNbInputs();
-            if(nbHiddenNeurons < nbInputs) {
+            if (nbHiddenNeurons < nbInputs) {
                 System.err.println("Number of hidden neurons < Number of inputs");
                 System.exit(1);
             }
@@ -157,15 +152,29 @@ public class FeedForwardNNTrainAndEvaluateMain {
                         double goalValue = outputsLine[o];
 
                         // TODO Change for outputs other than 0 or 1
-                        if (goalValue == 0) {
-                            if (actualOutput < 0.5) {
-                                nbGoodPredictions++;
-                                successRatio = (double) nbGoodPredictions / totalPredictions;
+                        if ("sigmoid_symmetric".equals(System.getProperty("activation_function"))) {
+                            if (goalValue == -1) {
+                                if (actualOutput < 0) {
+                                    nbGoodPredictions++;
+                                    successRatio = (double) nbGoodPredictions / totalPredictions;
+                                }
+                            } else if (goalValue == 1) {
+                                if (actualOutput > 0 && actualOutput <= 1.0) {
+                                    nbGoodPredictions++;
+                                    successRatio = (double) nbGoodPredictions / totalPredictions;
+                                }
                             }
-                        } else if (goalValue == 1) {
-                            if (actualOutput > 0.5 && actualOutput <= 1.0) {
-                                nbGoodPredictions++;
-                                successRatio = (double) nbGoodPredictions / totalPredictions;
+                        } else {
+                            if (goalValue == 0) {
+                                if (actualOutput < 0.5) {
+                                    nbGoodPredictions++;
+                                    successRatio = (double) nbGoodPredictions / totalPredictions;
+                                }
+                            } else if (goalValue == 1) {
+                                if (actualOutput > 0.5 && actualOutput <= 1.0) {
+                                    nbGoodPredictions++;
+                                    successRatio = (double) nbGoodPredictions / totalPredictions;
+                                }
                             }
                         }
                     } // output neurons

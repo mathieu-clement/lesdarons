@@ -6,6 +6,11 @@ public class AlgoGenUtils {
         return 1. / (1. + 1. / Math.exp(a));
     }
 
+    // sigmoid symmetric: useful for values between -1 and +1
+    public static double sigmoidSymmetric(double a) {
+        return Math.tanh(a);
+    }
+
     // Dot product, weighted sum
     // a = w0 + w1 * x1 + w2 * x2
     // x0 is always 1
