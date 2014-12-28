@@ -8,12 +8,12 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         // NB: Except for data set 4, there is one output
 
         // Parameters you can change
-        int nbIterMax = 120000;
+        int nbIterMax = 500000;
         double goalSuccessRatio = 0.997;
         double eta = 0.01; // learning rate
         int nbHiddenNeurons = 9; // >= nbInputs
         int nbOutputNeurons = 1;
-        int goalValueMax = 1;
+        int goalValueMax = 1; // is ignored when calculating good predictions ratio
         int goalValueMin = 0;
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
         String WORKING_DIR = "/home/mathieu/Dropbox/LesDarons/AlgoGen/NN_Clement/";
@@ -172,6 +172,8 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             /*****************************
              *        EVALUATION         *
              *****************************/
+            if (!System.getProperty("evaluation_enabled", "true").equals("true")) return;
+
             BallDataFile testDataFile = ballDataFiles[2];
 
             BallDataFile ballEvalDataFile = ballDataFiles[3];
@@ -210,7 +212,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             ballEvalDataFile.close();
 
             // Execute octave
-            String cmd="konsole --workdir " + WORKING_DIR + " -e octave NeuralNetworkCheck_octave.m";
+            String cmd = "konsole --workdir " + WORKING_DIR + " -e octave NeuralNetworkCheck_octave.m";
             Process child = Runtime.getRuntime().exec(cmd);
             child.waitFor();
         } catch (FileNotFoundException e) {
