@@ -1,6 +1,6 @@
 package algogen;
 
-import matlabcontrol.*;
+/*import matlabcontrol.*;*/
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,20 +20,20 @@ public class TrainBallSingleNeuronMain {
         double eta = 0.02; // choose freely
         double goalSuccessRatio = 0.998;
 
-        MatlabProxy matlabProxy = null;
+        /*MatlabProxy matlabProxy = null;*/
 
         BallDataFile ballDataFiles[] = new BallDataFile[2];
 
         try {
             ballDataFiles[0] = BallDataFile.openForReading(
                     args.length >= 1 ? args[0] :
-                            "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
-                                    "neural_networks\\" +
+                            "/home/mathieu/Dropbox/LesDarons/AlgoGen/docs_riedi/" +
+                                    "neural_networks/" +
                                     "ballZEROdata.txt");
             ballDataFiles[1] = BallDataFile.openForReading(
                     args.length >= 2 ? args[1] :
-                            "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\docs_riedi\\" +
-                                    "neural_networks\\" +
+                            "/home/mathieu/Dropbox/LesDarons/AlgoGen/docs_riedi/" +
+                                    "neural_networks/" +
                                     "ballONEdata.txt");
 
             double[][][] lines = new double[2][][];
@@ -73,6 +73,7 @@ public class TrainBallSingleNeuronMain {
             String weightsStr = Arrays.toString(neuron.getWeightsNoModifyPlease());
             System.out.println(weightsStr);
 
+            /*
             System.out.println("Starting Matlab...");
 
             MatlabProxyFactoryOptions.Builder factoryOptionsBuilder = new MatlabProxyFactoryOptions.Builder();
@@ -87,16 +88,16 @@ public class TrainBallSingleNeuronMain {
             System.in.read();
 
             matlabProxy.eval("SingleNeuronCheck(" + weightsStr + ')');
-
+            */
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (MatlabConnectionException e) {
+        } /*catch (MatlabConnectionException e) {
             e.printStackTrace();
         } catch (MatlabInvocationException e) {
             e.printStackTrace();
-        } finally {
+        }*/ finally {
             if (ballDataFiles[0] != null)
                 try {
                     ballDataFiles[0].close();
@@ -109,9 +110,11 @@ public class TrainBallSingleNeuronMain {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            /*
             if (matlabProxy != null) {
                 matlabProxy.disconnect();
             }
+            */
         }
     }
 }

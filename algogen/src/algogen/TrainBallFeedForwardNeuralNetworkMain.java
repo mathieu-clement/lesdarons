@@ -1,6 +1,6 @@
 package algogen;
 
-import matlabcontrol.*;
+/*import matlabcontrol.*;*/
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,30 +20,31 @@ public class TrainBallFeedForwardNeuralNetworkMain {
         int goalValueMax = 1;
         int goalValueMin = 0;
         double goalValueThreshold = (goalValueMax - goalValueMin) / 2.;
-        String WORKING_DIR = "C:\\Users\\mathieu\\Dropbox\\LesDarons\\AlgoGen\\NN_Clement";
+        String WORKING_DIR = "/home/mathieu/Dropbox/LesDarons/AlgoGen/NN_Clement/";
 
         // Program
         BallDataFile ballDataFiles[] = new BallDataFile[4];
 
-        MatlabProxy matlabProxy = null;
+        // MATLAB
+        //MatlabProxy matlabProxy = null;
 
         try {
             // ZERO data (or ONE data)
             ballDataFiles[0] = BallDataFile.openForReading(
                     args.length >= 1 ? args[0] :
-                            WORKING_DIR + "\\ballZEROdata.txt");
+                            WORKING_DIR + "/ballZEROdata.txt");
             // ONE data (or ZERO data)
             ballDataFiles[1] = BallDataFile.openForReading(
                     args.length >= 2 ? args[1] :
-                            WORKING_DIR + "\\ballONEdata.txt");
+                            WORKING_DIR + "/ballONEdata.txt");
             // balltestdata.txt
             ballDataFiles[2] = BallDataFile.openForReading(
                     args.length >= 3 ? args[2] :
-                            WORKING_DIR + "\\balltestdata.txt");
+                            WORKING_DIR + "/balltestdata.txt");
             // balleval.txt
             ballDataFiles[3] = BallDataFile.openForWriting(
                     args.length >= 4 ? args[3] :
-                            WORKING_DIR + "\\balleval.txt");
+                            WORKING_DIR + "/balleval.txt");
 
 
             double[][][] lines = new double[2][][];
@@ -216,7 +217,7 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             ballEvalDataFile.close();
 
             // MATLAB
-
+            /*
             System.out.println("Starting Matlab...");
 
             MatlabProxyFactoryOptions.Builder factoryOptionsBuilder = new MatlabProxyFactoryOptions.Builder();
@@ -231,16 +232,17 @@ public class TrainBallFeedForwardNeuralNetworkMain {
             System.in.read();
 
             matlabProxy.eval("NeuralNetworkCheck");
+            */
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (MatlabInvocationException e) {
+        /*} catch (MatlabInvocationException e) {
             System.err.println("MATLAB error: " + e.getCause());
         } catch (MatlabConnectionException e) {
             e.printStackTrace();
-        } finally {
+        */} finally {
             for (BallDataFile ballDataFile : ballDataFiles) {
                 if (ballDataFile != null)
                     try {
@@ -249,9 +251,11 @@ public class TrainBallFeedForwardNeuralNetworkMain {
                         e.printStackTrace();
                     }
             }
+            /*
             if (matlabProxy != null) {
                 matlabProxy.disconnect();
             }
+            */
         }
     }
 
