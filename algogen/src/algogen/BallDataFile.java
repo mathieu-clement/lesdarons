@@ -165,7 +165,7 @@ public class BallDataFile extends File {
     }
 
     public void writeValue(double d) throws IOException {
-        writer.write(String.format("%04.9f ", d));
+        writer.write(String.format("%f ", d)); // the space is important
     }
 
     public void writeNewLine() throws IOException {
