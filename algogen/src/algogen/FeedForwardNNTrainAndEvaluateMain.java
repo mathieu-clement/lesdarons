@@ -22,11 +22,11 @@ public class FeedForwardNNTrainAndEvaluateMain {
         // -Dactivation_function=sigmoid_symmetric
         //      for values [-1 +1] instead of [0 1]                                               [ 0  1]
 
-        int maxEpochs = 300000;
-        int epochsBetweenReports = 1;
-        double goalSuccessRatio = 0.88;
+        int maxEpochs = 200000;
+        int epochsBetweenReports = 1000;
+        double goalSuccessRatio = 0.997;
         double eta = 0.1; // learning rate
-        int nbHiddenNeurons = 100; // >= nbInputs
+        int nbHiddenNeurons = 9; // >= nbInputs
 
         // End of parameters you can change
         // ---------------------------------
