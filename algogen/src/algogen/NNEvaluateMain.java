@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 /**
@@ -34,9 +35,11 @@ public class NNEvaluateMain {
          */
 
         String networkFilename = args[0];
-        int nbInputs = Integer.parseInt(args[1]);
-        int nbHiddenNeurons = Integer.parseInt(args[2]);
-        int nbOutputNeurons = Integer.parseInt(args[3]);
+        // args[1] is some test data
+        // args[2] is the output file
+        int nbInputs = Integer.parseInt(args[3]);
+        int nbHiddenNeurons = Integer.parseInt(args[4]);
+        int nbOutputNeurons = Integer.parseInt(args[5]);
 
         int nbWeightsHidden = nbInputs + 1;
         int nbWeightsOutputs = nbHiddenNeurons + 1;
@@ -80,7 +83,15 @@ public class NNEvaluateMain {
             }
 
             for (int i = 0; i < nbWeights; i++) {
-                neuron.setWeight(i, Double.parseDouble(tokenizer.nextToken()));
+                try {
+                    neuron.setWeight(i, Double.parseDouble(tokenizer.nextToken()));
+                } catch (NoSuchElementException nse) {
+                    System.err.println("Trying to find a " + i + "th weight on " +
+                            (hiddenLayerMode ?
+                                    "hidden neuron " + crtHiddenNeuronIdx :
+                                    "output neuron " + crtOutputNeuronIdx));
+                    throw nse;
+                }
             }
         }
 
@@ -91,10 +102,12 @@ public class NNEvaluateMain {
         ballDataFiles[0] = null;
         // balltestdata.txt
         ballDataFiles[1] = BallDataFile.openForReading(
+                args.length >= 1 ? args[1] :
                         WORKING_DIR + "/balltestdata.txt");
         // balleval.txt
         ballDataFiles[2] = BallDataFile.openForWriting(
-                        WORKING_DIR + "/balleval.txt");
+                args.length >= 2 ? args[2] :
+                WORKING_DIR + "/balleval.txt");
 
 
         BallDataFile testDataFile = ballDataFiles[1];

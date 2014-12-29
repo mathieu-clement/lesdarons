@@ -21,8 +21,9 @@ public class AlgoGenUtils {
         assert weights.length == inputs.length;
 
         double sum = 0.;
-        for (int i = 0; i < weights.length; i++)
+        for (int i = 0; i < weights.length; i++) {
             sum += weights[i] * inputs[i];
+        }
 
         return sum;
     }
