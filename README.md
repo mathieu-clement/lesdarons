@@ -12,13 +12,17 @@ CMake, tests GUnit inclus
 
 ### Interprocess Communication
 
-Makefile traditionnel.
+#### GNU Makefile
 
 `clean` supprime tout sauf les exécutables
 
 `clean_all` supprime tout y compris les exécutables
 
 `run` permet de lancer le programme avec des paramètres par défaut
+
+#### Lectures recommandées
+
+* [Advanced Linux Programming](http://www.advancedlinuxprogramming.com/alp-folder/advanced-linux-programming.pdf)
 
 ## Algorithmes génétiques
 
