@@ -1,29 +1,29 @@
-# README #
+# Projets Mathieu & Bryan #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Ce repo contient les travaux pratiques de Mathieu et de Bryan à l'école d'ing.
 
-### What is this repository for? ###
+## TAP3 ( C++ )
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+### Jeux Awele et Nim
 
-### How do I get set up? ###
+CMake, tests GUnit inclus
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+## OS2 ( UNIX )
 
-### Contribution guidelines ###
+### Interprocess Communication
 
-* Writing tests
-* Code review
-* Other guidelines
+#### GNU Makefile
 
-### Who do I talk to? ###
+`clean` supprime tout sauf les exécutables
 
-* Repo owner or admin
-* Other community or team contact
+`clean_all` supprime tout y compris les exécutables
+
+`run` permet de lancer le programme avec des paramètres par défaut
+
+#### Lectures recommandées
+
+* [Advanced Linux Programming](http://www.advancedlinuxprogramming.com/alp-folder/advanced-linux-programming.pdf)
+
+## Algorithmes génétiques
+
+### Neurone simple et réseau de neurones en Java
