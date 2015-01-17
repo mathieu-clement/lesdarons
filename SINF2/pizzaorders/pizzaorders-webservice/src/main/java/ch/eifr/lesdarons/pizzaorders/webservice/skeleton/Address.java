@@ -3,6 +3,7 @@ package ch.eifr.lesdarons.pizzaorders.webservice.skeleton;
 public interface Address {
     // Everything not null, except when mentioned otherwise.
 
+    long getId();
     String getFirstName();
     String getLastName();
     String getStreetName();

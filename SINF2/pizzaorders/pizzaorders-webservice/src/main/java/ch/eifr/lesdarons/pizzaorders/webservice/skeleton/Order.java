@@ -1,9 +1,9 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.skeleton;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 public interface Order {
     long getId();
-    DateTime getDateTime();
+    Date getDateTime();
     Address getDeliveryAddress();
 }
