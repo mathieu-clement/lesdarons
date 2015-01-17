@@ -11,7 +11,7 @@ public class HibernateUtil {
 
     private static final SessionFactory sessionFactory;
 
-    private static final Logger logger = LoggerFactory.getLogger("pizzaorders.HibernateUtil");
+    private static final Logger logger = LoggerFactory.getLogger("pizzaorders.webservice.HibernateUtil");
 
     static {
         try {

@@ -1,13 +1,16 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.config;
 
 import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.HibernateUtil;
+import ch.eifr.lesdarons.pizzaorders.webservice.entities.IngredientEntity;
+import ch.eifr.lesdarons.pizzaorders.webservice.entities.PizzaEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 import java.util.*;
 
-public class SessionFacade {
+public class ORMFacade {
     public static void save(Collection<Object> collection) {
         Session session = HibernateUtil.makeSession();
         try {
@@ -29,15 +32,23 @@ public class SessionFacade {
         }});
     }
 
-    public static Collection<Pizza> getPizzas() {
-        Session session = HibernateUtil.makeSession();
+    public static Collection<Pizza> getPizzas(Session session) {
         Collection<Pizza> pizzas = new LinkedList<>();
         Iterator it = session.createQuery("from ch.eifr.lesdarons.pizzaorders.webservice.entities.PizzaEntity").iterate();
         while (it.hasNext()) {
             pizzas.add((Pizza) it.next());
         }
-        session.close();
         return pizzas;
+    }
+
+    // Returns null if not found
+    public static Pizza findPizza(Session session, String pizzaName) {
+        return (Pizza) session.createCriteria(PizzaEntity.class).add(Restrictions.eq("name", pizzaName)).uniqueResult();
+    }
+
+    // Returns null if not found
+    public static Ingredient findIngredient(Session session, String ingredientName) {
+        return (Ingredient) session.createCriteria(IngredientEntity.class).add(Restrictions.eq("name", ingredientName)).uniqueResult();
     }
 
     public static Collection<Ingredient> getAllIngredients(Session session) {

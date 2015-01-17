@@ -5,7 +5,7 @@ import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Collection;
+import java.util.Set;
 
 @Entity
 @Table(name = "pizzas")
@@ -14,7 +14,7 @@ public class PizzaEntity implements Pizza {
     private String name;
     private BigDecimal priceBig;
     private BigDecimal priceSmall;
-    private Collection<Ingredient> ingredients;
+    //private Set<Ingredient> ingredients;
 
     public PizzaEntity() {
         // constructor for Hibernate, can be private or package-local.
@@ -40,10 +40,12 @@ public class PizzaEntity implements Pizza {
         return null;
     }
 
+    /*
     @Override
-    public Collection<Ingredient> getIngredients() {
+    public Set<Ingredient> getIngredients() {
         return null;
     }
+    */
 
     public void setName(String name) {
         this.name = name;
@@ -57,7 +59,9 @@ public class PizzaEntity implements Pizza {
         this.priceSmall = priceSmall;
     }
 
-    public void setIngredients(Collection<Ingredient> ingredients) {
+    /*
+    public void setIngredients(Set<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
+    */
 }
