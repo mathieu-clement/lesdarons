@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pizzas>
+    <pizza>
+        <name>Margherita</name>
+        <price small="12" big="15"/>
+        <ingredients>
+            <ingredient>mozzarella</ingredient>
+            <ingredient>basilic frais</ingredient>
+            <ingredient>tomates</ingredient>
+        </ingredients>
+    </pizza>
+    <pizza>
+        <name>Verace Pizza Napoletana</name>
+        <price small="14" big="17"/>
+        <ingredients>
+            <ingredient>tomates</ingredient>
+            <ingredient>origan</ingredient>
+            <ingredient>ail</ingredient>
+            <ingredient>mozzarella di bufala campana</ingredient>
+            <ingredient>basilic frais</ingredient>
+            <ingredient>huile d'olive extra-vierge</ingredient>
+        </ingredients>
+    </pizza>
+    <pizza>
+        <name>Regina</name>
+        <price small="13" big="16"/>
+        <ingredients>
+            <ingredient>tomates</ingredient>
+            <ingredient>mozzarella</ingredient>
+            <ingredient>jambon</ingredient>
+            <ingredient>champignons</ingredient>
+        </ingredients>
+    </pizza>
+    <pizza>
+        <name>Marinara</name>
+        <price small="13" big="16"/>
+        <ingredients>
+            <ingredient>tomates</ingredient>
+            <ingredient>ail</ingredient>
+            <ingredient>origan</ingredient>
+            <ingredient>huile d'olive extra-vierge</ingredient>
+        </ingredients>
+    </pizza>
+    <pizza>
+        <name>Quattro Stagioni</name>
+        <price small="14" big="17"/>
+        <ingredients>
+            <ingredient>tomates</ingredient>
+            <ingredient>mozzarella</ingredient>
+            <ingredient>champignons</ingredient>
+            <ingredient>artichaut</ingredient>
+            <ingredient>jambon</ingredient>
+            <ingredient>olives</ingredient>
+            <ingredient>huile d'olive extra-vierge</ingredient>
+        </ingredients>
+    </pizza>
+</pizzas>
