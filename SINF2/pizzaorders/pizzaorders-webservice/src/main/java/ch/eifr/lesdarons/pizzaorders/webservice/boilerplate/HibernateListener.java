@@ -1,5 +1,7 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.boilerplate;
 
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.HibernateUtil;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 

@@ -1,4 +1,4 @@
-package ch.eifr.lesdarons.pizzaorders.webservice.boilerplate;
+package ch.eifr.lesdarons.pizzaorders.webservice.orm;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

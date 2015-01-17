@@ -1,8 +1,7 @@
-package ch.eifr.lesdarons.pizzaorders.webservice.config;
+package ch.eifr.lesdarons.pizzaorders.webservice.orm;
 
-import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.HibernateUtil;
-import ch.eifr.lesdarons.pizzaorders.webservice.entities.IngredientEntity;
-import ch.eifr.lesdarons.pizzaorders.webservice.entities.PizzaEntity;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.IngredientEntity;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;

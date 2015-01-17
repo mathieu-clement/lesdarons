@@ -1,9 +1,9 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.ws_resources;
 
 import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.GsonForHibernate;
-import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.HibernateUtil;
-import ch.eifr.lesdarons.pizzaorders.webservice.config.ORMFacade;
-import ch.eifr.lesdarons.pizzaorders.webservice.entities.PizzaEntity;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.HibernateUtil;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.ORMFacade;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;
 import org.slf4j.Logger;

@@ -1,9 +1,9 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.ws_resources;
 
 import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.GsonForHibernate;
-import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.HibernateUtil;
-import ch.eifr.lesdarons.pizzaorders.webservice.config.ORMFacade;
-import ch.eifr.lesdarons.pizzaorders.webservice.entities.IngredientEntity;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.HibernateUtil;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.ORMFacade;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.IngredientEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;
@@ -35,13 +35,18 @@ public class Ingredients {
     @Path("forPizza/{pizzaName}/{ingredientName}")
     public Response addIngredientToPizza(@PathParam("pizzaName") String pizzaName,
                                          @PathParam("ingredientName") String ingredientName) {
+        logger.info("Adding ingredient '" + ingredientName + "' to pizza '" + pizzaName + "'");
         Session session = HibernateUtil.makeSession();
         Pizza pizza = ORMFacade.findPizza(session, pizzaName);
         Response response;
 
-        if(pizza != null) {
+        if (pizza != null) {
             Ingredient ingredient = ORMFacade.findIngredient(session, ingredientName);
-            if(ingredient != null) {
+            if (ingredient != null) {
+                pizza.getIngredients().add(ingredient);
+                session.beginTransaction();
+                session.update(pizza);
+                session.getTransaction().commit();
                 response = Response.ok().build();
             } else {
                 response = Response.status(Response.Status.NOT_FOUND).entity("Ingredient was not found").build();

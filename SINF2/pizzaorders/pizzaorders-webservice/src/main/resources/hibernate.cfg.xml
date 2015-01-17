@@ -57,8 +57,8 @@
         <!--
         <mapping resource="org/hibernate/tutorial/hbm/Event.hbm.xml"/>
         -->
-        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.entities.IngredientEntity"/>
-        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.entities.PizzaEntity"/>
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.IngredientEntity"/>
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaEntity"/>
 
     </session-factory>
 
