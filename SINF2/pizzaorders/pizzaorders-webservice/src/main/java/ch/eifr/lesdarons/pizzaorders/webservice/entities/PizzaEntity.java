@@ -1,11 +1,9 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.entities;
 
-import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Set;
 
 @Entity
 @Table(name = "pizzas")
@@ -25,19 +23,19 @@ public class PizzaEntity implements Pizza {
     @Basic(optional = false)
     @Column(name = "name", unique = true, nullable = false)
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
     @Column(name = "price_small", precision = 8, scale = 2)
     public BigDecimal getPriceSmall() {
-        return null;
+        return priceSmall;
     }
 
     @Override
     @Column(name = "price_big", precision = 8, scale = 2)
     public BigDecimal getPriceBig() {
-        return null;
+        return priceBig;
     }
 
     /*
