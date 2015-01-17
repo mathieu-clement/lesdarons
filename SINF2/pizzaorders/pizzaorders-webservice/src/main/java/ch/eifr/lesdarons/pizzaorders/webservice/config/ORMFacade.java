@@ -6,7 +6,6 @@ import ch.eifr.lesdarons.pizzaorders.webservice.entities.PizzaEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 import java.util.*;
 
@@ -43,30 +42,20 @@ public class ORMFacade {
 
     // Returns null if not found
     public static Pizza findPizza(Session session, String pizzaName) {
-        return (Pizza) session.createCriteria(PizzaEntity.class).add(Restrictions.eq("name", pizzaName)).uniqueResult();
+        //return (Pizza) session.createCriteria(PizzaEntity.class).add(Restrictions.eq("name", pizzaName)).uniqueResult();
+        return (Pizza) session.load(PizzaEntity.class, pizzaName);
     }
 
     // Returns null if not found
     public static Ingredient findIngredient(Session session, String ingredientName) {
-        return (Ingredient) session.createCriteria(IngredientEntity.class).add(Restrictions.eq("name", ingredientName)).uniqueResult();
+        //return (Ingredient) session.createCriteria(IngredientEntity.class).add(Restrictions.eq("name", ingredientName)).uniqueResult();
+        return (Ingredient) session.load(IngredientEntity.class, ingredientName);
     }
 
-    public static Collection<Ingredient> getAllIngredients(Session session) {
+    public static Set<Ingredient> getAllIngredients(Session session) {
         session.beginTransaction();
-        Collection<Ingredient> ingredients = new LinkedList<>();
-        Iterator it = session.createQuery("from ch.eifr.lesdarons.pizzaorders.webservice.entities.IngredientEntity").iterate();
-        while (it.hasNext()) {
-            ingredients.add((Ingredient) it.next());
-        }
+        Set<Ingredient> ingredients = new HashSet<>(session.createCriteria(IngredientEntity.class).list());
         session.getTransaction().commit();
         return ingredients;
-    }
-
-    public static Collection<Ingredient> getIngredients(Pizza pizza) {
-        Session session = HibernateUtil.makeSession();
-        Collection<Ingredient> ingredients = new HashSet<>();
-        //session.create
-        // TODO Implement
-        return null;
     }
 }
