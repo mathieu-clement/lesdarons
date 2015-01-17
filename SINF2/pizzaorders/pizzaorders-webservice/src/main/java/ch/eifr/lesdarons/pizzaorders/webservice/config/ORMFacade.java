@@ -7,7 +7,10 @@ import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Vector;
 
 public class ORMFacade {
     public static void save(Collection<Object> collection) {
@@ -32,11 +35,9 @@ public class ORMFacade {
     }
 
     public static Collection<Pizza> getPizzas(Session session) {
-        Collection<Pizza> pizzas = new LinkedList<>();
-        Iterator it = session.createQuery("from ch.eifr.lesdarons.pizzaorders.webservice.entities.PizzaEntity").iterate();
-        while (it.hasNext()) {
-            pizzas.add((Pizza) it.next());
-        }
+        session.beginTransaction();
+        Set<Pizza> pizzas = new HashSet<>(session.createCriteria(PizzaEntity.class).list());
+        session.getTransaction().commit();
         return pizzas;
     }
 
