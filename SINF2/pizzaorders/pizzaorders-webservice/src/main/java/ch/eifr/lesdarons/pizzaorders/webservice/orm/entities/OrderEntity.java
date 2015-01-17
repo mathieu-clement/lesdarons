@@ -43,7 +43,8 @@ public class OrderEntity implements Order {
 
     @Override
     @ManyToOne(targetEntity = AddressEntity.class,
-        cascade = CascadeType.REMOVE)
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.EAGER)
     public Address getDeliveryAddress() {
         return deliveryAddress;
     }
