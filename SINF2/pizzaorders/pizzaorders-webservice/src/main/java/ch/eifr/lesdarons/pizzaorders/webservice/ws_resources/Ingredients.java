@@ -1,8 +1,13 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.ws_resources;
 
+import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.HibernateProxyTypeAdapter;
+import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.HibernateUtil;
 import ch.eifr.lesdarons.pizzaorders.webservice.config.SessionFacade;
 import ch.eifr.lesdarons.pizzaorders.webservice.entities.IngredientEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,18 +22,16 @@ public class Ingredients {
     @GET
     @Produces("text/json")
     public Response getAllIngredients() {
-        Collection<Ingredient> allIngredients = SessionFacade.getAllIngredients();
-        StringBuilder sb = new StringBuilder("[");
-        for (Ingredient ingredient : allIngredients) {
-            sb.append("{\"name\":\"");
-            sb.append(ingredient.getName());
-            sb.append("\"},");
-        }
-        if (!allIngredients.isEmpty()) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        sb.append(']');
-        return Response.ok().entity(sb.toString()).build();
+        Session session = HibernateUtil.makeSession();
+        Collection<Ingredient> allIngredients = SessionFacade.getAllIngredients(session);
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY);
+        Gson gson = gsonBuilder.create();
+        String output = gson.toJson(allIngredients);
+        session.close();
+
+        return Response.ok().entity(output).build();
     }
 
     @POST

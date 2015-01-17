@@ -1,5 +1,6 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.config;
 
+import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.HibernateUtil;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;
@@ -8,7 +9,7 @@ import java.util.*;
 
 public class SessionFacade {
     public static void save(Collection<Object> collection) {
-        Session session = makeSession();
+        Session session = HibernateUtil.makeSession();
         try {
             session.beginTransaction();
             for (Object o : collection) {
@@ -22,10 +23,6 @@ public class SessionFacade {
         }
     }
 
-    private static Session makeSession() {
-        return MyServletContainer.getInstance().getSessionFactory().openSession();
-    }
-
     public static void save(final Object o) {
         save(new Vector<Object>() {{
             add(o);
@@ -33,7 +30,7 @@ public class SessionFacade {
     }
 
     public static Collection<Pizza> getPizzas() {
-        Session session = makeSession();
+        Session session = HibernateUtil.makeSession();
         Collection<Pizza> pizzas = new LinkedList<>();
         Iterator it = session.createQuery("from ch.eifr.lesdarons.pizzaorders.webservice.entities.PizzaEntity").iterate();
         while (it.hasNext()) {
@@ -43,8 +40,7 @@ public class SessionFacade {
         return pizzas;
     }
 
-    public static Collection<Ingredient> getAllIngredients() {
-        Session session = makeSession();
+    public static Collection<Ingredient> getAllIngredients(Session session) {
         session.beginTransaction();
         Collection<Ingredient> ingredients = new LinkedList<>();
         Iterator it = session.createQuery("from ch.eifr.lesdarons.pizzaorders.webservice.entities.IngredientEntity").iterate();
@@ -52,12 +48,11 @@ public class SessionFacade {
             ingredients.add((Ingredient) it.next());
         }
         session.getTransaction().commit();
-        session.close();
         return ingredients;
     }
 
     public static Collection<Ingredient> getIngredients(Pizza pizza) {
-        Session session = makeSession();
+        Session session = HibernateUtil.makeSession();
         Collection<Ingredient> ingredients = new HashSet<>();
         //session.create
         // TODO Implement
