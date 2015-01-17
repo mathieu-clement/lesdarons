@@ -64,4 +64,30 @@ public class PizzaEntity implements Pizza {
         this.ingredients = ingredients;
     }
     */
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PizzaEntity that = (PizzaEntity) o;
+
+        if (!name.equals(that.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "PizzaEntity{" +
+                "name='" + name + '\'' +
+                ", priceBig=" + priceBig +
+                ", priceSmall=" + priceSmall +
+                '}';
+    }
 }

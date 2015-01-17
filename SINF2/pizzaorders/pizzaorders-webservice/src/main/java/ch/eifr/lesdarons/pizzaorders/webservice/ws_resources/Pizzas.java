@@ -69,7 +69,7 @@ public class Pizzas {
         pizzaEntity.setPriceBig(priceBig);
         pizzaEntity.setPriceSmall(priceSmall);
 
-        logger.info("Adding new pizzaEntity " + name);
+        logger.info("Adding new pizza " + pizzaEntity);
         try {
             ORMFacade.save(pizzaEntity);
         } catch (Exception e) {

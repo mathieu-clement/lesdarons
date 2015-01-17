@@ -68,7 +68,8 @@ public class Ingredients {
             ORMFacade.save(ingredientEntity);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return Response.status(Response.Status.CONFLICT).entity("Ingredient already exists.").build();
+            return Response.status(Response.Status.CONFLICT).entity(
+                    "Error processing request. Maybe the ingredient already exists.").build();
         }
         return Response.ok().build();
     }
