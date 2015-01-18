@@ -62,4 +62,14 @@ public class OrderEntity implements Order {
     public Set<PizzaToOrderAssocEntity> getPizzaAssocs() {
         return pizzaAssocs;
     }
+
+    @Override
+    public String toString() {
+        return "OrderEntity{" +
+                "id=" + id +
+                ", dateTime=" + dateTime +
+                ", deliveryAddress=" + deliveryAddress +
+                ", pizzaAssocs=" + pizzaAssocs +
+                '}';
+    }
 }

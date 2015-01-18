@@ -20,7 +20,7 @@ import java.util.Date;
 
 @Path("/orders")
 public class Orders {
-    private Logger logger = LoggerFactory.getLogger("pizzaorders.webservice.orders");
+    private static Logger logger = LoggerFactory.getLogger("pizzaorders.webservice.orders");
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -42,6 +42,7 @@ public class Orders {
 
         if (order != null) {
             String output = GsonForHibernate.getGsonInstance().toJson(order);
+            // Unfortunately database design is apparent in the JSON output...
             response = Response.ok().entity(output).build();
         } else {
             response = Response.status(Response.Status.NOT_FOUND).entity("Order not found").build();
@@ -105,6 +106,7 @@ public class Orders {
     @Path("{orderId}/confirm")
     public Response confirmOrder(@PathParam("orderId") long orderId) {
         logger.info("Confirming order no. " + orderId);
+        // TODO Check order is not empty
         OrderManager.getInstance().persistPermanently(orderId);
         return Response.ok().build();
     }

@@ -8,7 +8,9 @@ import java.io.Serializable;
 
 @Embeddable
 public class PizzaToOrderAssocId implements Serializable {
-    private Order order;
+    // TODO 'transient' is a quick fix, a better way would be this:
+    // http://stackoverflow.com/a/14489534/753136
+    private transient Order order;
     private Pizza pizza;
 
     //@Id
@@ -51,5 +53,13 @@ public class PizzaToOrderAssocId implements Serializable {
         int result = order.hashCode();
         result = 31 * result + pizza.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PizzaToOrderAssocId{" +
+                 "orderId=" + order.getId() + // would cause cyclic dependency
+                ", pizza=" + pizza +
+                '}';
     }
 }

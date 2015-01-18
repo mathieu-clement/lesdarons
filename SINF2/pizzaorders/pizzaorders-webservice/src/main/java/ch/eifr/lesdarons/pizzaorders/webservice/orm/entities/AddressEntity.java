@@ -99,4 +99,18 @@ public class AddressEntity implements Address {
     public String getCountry() {
         return country;
     }
+
+    @Override
+    public String toString() {
+        return "AddressEntity{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", streetName='" + streetName + '\'' +
+                ", houseNumber='" + houseNumber + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                '}';
+    }
 }

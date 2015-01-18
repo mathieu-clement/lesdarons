@@ -52,4 +52,13 @@ public class PizzaToOrderAssocEntity {
     public void setPizzaSize(Pizza.Size pizzaSize) {
         this.pizzaSize = pizzaSize;
     }
+
+    @Override
+    public String toString() {
+        return "PizzaToOrderAssocEntity{" +
+                "assocId=" + assocId +
+                ", quantity=" + quantity +
+                ", pizzaSize=" + pizzaSize +
+                '}';
+    }
 }

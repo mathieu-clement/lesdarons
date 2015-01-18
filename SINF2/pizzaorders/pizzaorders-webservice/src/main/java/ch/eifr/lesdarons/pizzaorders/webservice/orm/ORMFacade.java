@@ -3,14 +3,19 @@ package ch.eifr.lesdarons.pizzaorders.webservice.orm;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.IngredientEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.OrderEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaEntity;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaToOrderAssocEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Order;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class ORMFacade {
+    private static Logger logger = LoggerFactory.getLogger("pizzaorders.webservice.ormfacade");
+
     public static void save(Collection<Object> collection) {
         Session session = HibernateUtil.makeSession();
         try {
@@ -67,6 +72,12 @@ public class ORMFacade {
 
     // Returns null if not found
     public static Order findOrder(Session session, long orderId) {
-        return (Order) session.load(OrderEntity.class, orderId);
+        OrderEntity order = (OrderEntity) session.load(OrderEntity.class, orderId);
+        List<PizzaToOrderAssocEntity> pizzaOrderAssocs = session
+                .createQuery("from PizzaToOrderAssocEntity where assocId.order.id = :orderId")
+                .setParameter("orderId", orderId).list();
+        order.setPizzaAssocs(new LinkedHashSet<>(pizzaOrderAssocs));
+        Order ret = order;
+        return ret;
     }
 }

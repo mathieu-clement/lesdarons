@@ -59,6 +59,7 @@ public class OrderManager {
 
     public void persistPermanently(long orderId) {
         OrderEntry orderEntry = orders.get(orderId);
+        orderEntry.getSession().save(orderEntry.getOrder().getDeliveryAddress());
         orderEntry.getTransaction().commit();
         orderEntry.getSession().close();
 
