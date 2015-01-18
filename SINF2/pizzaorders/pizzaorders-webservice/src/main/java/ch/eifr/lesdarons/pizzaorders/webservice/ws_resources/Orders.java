@@ -55,6 +55,7 @@ public class Orders {
     @POST // Use POST if resource URL is not known in advance
     // https://jcalcote.wordpress.com/2009/08/06/restful-transactions/
     @Path("begin")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response beginOrder(
             @FormParam("firstName") String firstName,
             @FormParam("lastName") String lastName,
