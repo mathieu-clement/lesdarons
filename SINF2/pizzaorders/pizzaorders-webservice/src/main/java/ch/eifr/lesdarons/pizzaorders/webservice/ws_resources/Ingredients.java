@@ -76,6 +76,6 @@ public class Ingredients {
             return Response.status(Response.Status.CONFLICT).entity(
                     "Error processing request. Maybe the ingredient already exists.").build();
         }
-        return Response.ok().build();
+        return Response.status(Response.Status.CREATED).build();
     }
 }

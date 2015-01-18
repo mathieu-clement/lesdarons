@@ -47,7 +47,8 @@ public class Orders {
         return response;
     }
 
-    @PUT
+    @POST // Use POST if resource URL is not known in advance
+    // https://jcalcote.wordpress.com/2009/08/06/restful-transactions/
     @Path("add")
     public Response addOrder(
             @FormParam("name") String name,
@@ -77,6 +78,6 @@ public class Orders {
             throw e;
             //return Response.status(Response.Status.CONFLICT).entity("Pizza already exists.").build();
         }
-        return Response.ok().build();
+        return Response.status(Response.Status.CREATED).build();
     }
 }

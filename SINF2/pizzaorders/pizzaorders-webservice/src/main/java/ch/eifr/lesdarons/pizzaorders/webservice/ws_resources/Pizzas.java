@@ -77,6 +77,6 @@ public class Pizzas {
             throw e;
             //return Response.status(Response.Status.CONFLICT).entity("Pizza already exists.").build();
         }
-        return Response.ok().build();
+        return Response.status(Response.Status.CREATED).build();
     }
 }
