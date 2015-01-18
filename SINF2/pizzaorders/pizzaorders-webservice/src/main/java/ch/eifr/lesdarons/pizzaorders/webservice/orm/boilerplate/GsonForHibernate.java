@@ -1,4 +1,4 @@
-package ch.eifr.lesdarons.pizzaorders.webservice.boilerplate;
+package ch.eifr.lesdarons.pizzaorders.webservice.orm.boilerplate;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

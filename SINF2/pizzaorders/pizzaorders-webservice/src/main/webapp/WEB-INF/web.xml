@@ -16,6 +16,6 @@
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
     <listener>
-        <listener-class>ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.HibernateListener</listener-class>
+        <listener-class>ch.eifr.lesdarons.pizzaorders.webservice.orm.boilerplate.HibernateListener</listener-class>
     </listener>
 </web-app>

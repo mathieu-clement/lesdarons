@@ -1,6 +1,6 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.ws_resources;
 
-import ch.eifr.lesdarons.pizzaorders.webservice.boilerplate.GsonForHibernate;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.boilerplate.GsonForHibernate;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.HibernateUtil;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.ORMFacade;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.IngredientEntity;

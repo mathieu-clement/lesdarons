@@ -1,4 +1,4 @@
-package ch.eifr.lesdarons.pizzaorders.webservice.boilerplate;
+package ch.eifr.lesdarons.pizzaorders.webservice.orm.boilerplate;
 
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.HibernateUtil;
 import ch.eifr.lesdarons.pizzaorders.webservice.ws_resources.Ingredients;
