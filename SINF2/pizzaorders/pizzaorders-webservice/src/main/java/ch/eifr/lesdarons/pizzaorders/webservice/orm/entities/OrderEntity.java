@@ -13,7 +13,7 @@ public class OrderEntity implements Order {
     private long id = -1;
     private Date dateTime;
     private Address deliveryAddress;
-    private Set<PizzaToOrderAssocEntity> pizzaAssocs;
+    private Set<PizzaToOrderAssocEntity> pizzas;
 
     public OrderEntity() {
     }
@@ -30,8 +30,8 @@ public class OrderEntity implements Order {
         this.deliveryAddress = deliveryAddress;
     }
 
-    public void setPizzaAssocs(Set<PizzaToOrderAssocEntity> pizzaAssocs) {
-        this.pizzaAssocs = pizzaAssocs;
+    public void setPizzas(Set<PizzaToOrderAssocEntity> pizzas) {
+        this.pizzas = pizzas;
     }
 
     @Override
@@ -59,8 +59,8 @@ public class OrderEntity implements Order {
     @Override
     @MapsId("assocId")
     @OneToMany(cascade = CascadeType.REMOVE)
-    public Set<PizzaToOrderAssocEntity> getPizzaAssocs() {
-        return pizzaAssocs;
+    public Set<PizzaToOrderAssocEntity> getPizzas() {
+        return pizzas;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class OrderEntity implements Order {
                 "id=" + id +
                 ", dateTime=" + dateTime +
                 ", deliveryAddress=" + deliveryAddress +
-                ", pizzaAssocs=" + pizzaAssocs +
+                ", pizzaAssocs=" + pizzas +
                 '}';
     }
 }

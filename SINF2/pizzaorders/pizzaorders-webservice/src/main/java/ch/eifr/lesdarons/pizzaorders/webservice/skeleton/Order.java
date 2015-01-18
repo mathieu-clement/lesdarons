@@ -9,5 +9,5 @@ public interface Order {
     long getId();
     Date getDateTime();
     Address getDeliveryAddress();
-    Set<PizzaToOrderAssocEntity> getPizzaAssocs();
+    Set<PizzaToOrderAssocEntity> getPizzas();
 }

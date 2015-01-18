@@ -69,7 +69,7 @@ public class ORMFacade {
             for (Object o : list) {
                 associatedPizzas.add((PizzaToOrderAssocEntity) o);
             }
-            orderEntity.setPizzaAssocs(associatedPizzas);
+            orderEntity.setPizzas(associatedPizzas);
         }
         return orders;
     }
@@ -82,7 +82,7 @@ public class ORMFacade {
         for (Object o : list) {
             associatedPizzas.add((PizzaToOrderAssocEntity) o);
         }
-        order.setPizzaAssocs(associatedPizzas);
+        order.setPizzas(associatedPizzas);
         Order ret = order;
         return ret;
     }
