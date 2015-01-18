@@ -10,6 +10,12 @@ public interface Pizza {
     Set<Ingredient> getIngredients();
 
     public enum Size {
-        SMALL, BIG
+        SMALL("small"), BIG("big");
+
+        private String name;
+
+        Size(String name) {      // this constructor is needed for @PathParam from Jersey
+            this.name = name;
+        }
     }
 }

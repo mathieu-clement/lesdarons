@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name = "orders")
 public class OrderEntity implements Order {
-    private long id;
+    private long id = -1;
     private Date dateTime;
     private Address deliveryAddress;
     private Set<PizzaToOrderAssocEntity> pizzaAssocs;
