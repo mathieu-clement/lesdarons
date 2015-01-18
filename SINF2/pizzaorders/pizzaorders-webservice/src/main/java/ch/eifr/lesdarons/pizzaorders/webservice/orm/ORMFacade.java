@@ -7,6 +7,7 @@ import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaToOrderAssocEn
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Order;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +39,7 @@ public class ORMFacade {
     }
 
     public static Collection<Pizza> getPizzas(Session session) {
-        session.beginTransaction();
         Set<Pizza> pizzas = new HashSet<>(session.createCriteria(PizzaEntity.class).list());
-        session.getTransaction().commit();
         return pizzas;
     }
 
@@ -51,9 +50,7 @@ public class ORMFacade {
     }
 
     public static Set<Ingredient> getAllIngredients(Session session) {
-        session.beginTransaction();
         Set<Ingredient> ingredients = new HashSet<>(session.createCriteria(IngredientEntity.class).list());
-        session.getTransaction().commit();
         return ingredients;
     }
 
@@ -64,20 +61,35 @@ public class ORMFacade {
     }
 
     public static List<Order> getOrdersByDateDesc(Session session) {
-        session.beginTransaction();
         List<Order> orders = session.createQuery("from OrderEntity order by dateTime desc ").list();
-        session.getTransaction().commit();
+        for (Order order : orders) {
+            OrderEntity orderEntity = (OrderEntity) order;
+            List list = getAssociatedPizzas(session, order.getId()).list();
+            Set<PizzaToOrderAssocEntity> associatedPizzas = new LinkedHashSet<>();
+            for (Object o : list) {
+                associatedPizzas.add((PizzaToOrderAssocEntity) o);
+            }
+            orderEntity.setPizzaAssocs(associatedPizzas);
+        }
         return orders;
     }
 
     // Returns null if not found
     public static Order findOrder(Session session, long orderId) {
         OrderEntity order = (OrderEntity) session.load(OrderEntity.class, orderId);
-        List<PizzaToOrderAssocEntity> pizzaOrderAssocs = session
-                .createQuery("from PizzaToOrderAssocEntity where assocId.order.id = :orderId")
-                .setParameter("orderId", orderId).list();
-        order.setPizzaAssocs(new LinkedHashSet<>(pizzaOrderAssocs));
+        List list = getAssociatedPizzas(session, order.getId()).list();
+        Set<PizzaToOrderAssocEntity> associatedPizzas = new LinkedHashSet<>();
+        for (Object o : list) {
+            associatedPizzas.add((PizzaToOrderAssocEntity) o);
+        }
+        order.setPizzaAssocs(associatedPizzas);
         Order ret = order;
         return ret;
+    }
+
+    private static Query getAssociatedPizzas(Session session, long orderId) {
+        return session
+                .createQuery("from PizzaToOrderAssocEntity where assocId.order.id = :orderId")
+                .setParameter("orderId", orderId);
     }
 }
