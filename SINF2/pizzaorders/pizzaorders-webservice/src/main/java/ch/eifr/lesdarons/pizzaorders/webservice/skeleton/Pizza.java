@@ -8,4 +8,8 @@ public interface Pizza {
     BigDecimal getPriceSmall();
     BigDecimal getPriceBig();
     Set<Ingredient> getIngredients();
+
+    public enum Size {
+        SMALL, BIG
+    }
 }

@@ -1,15 +1,14 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.orm;
 
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.IngredientEntity;
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.OrderEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Ingredient;
+import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Order;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Pizza;
 import org.hibernate.Session;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 public class ORMFacade {
     public static void save(Collection<Object> collection) {
@@ -46,16 +45,28 @@ public class ORMFacade {
         return (Pizza) session.load(PizzaEntity.class, pizzaName);
     }
 
+    public static Set<Ingredient> getAllIngredients(Session session) {
+        session.beginTransaction();
+        Set<Ingredient> ingredients = new HashSet<>(session.createCriteria(IngredientEntity.class).list());
+        session.getTransaction().commit();
+        return ingredients;
+    }
+
     // Returns null if not found
     public static Ingredient findIngredient(Session session, String ingredientName) {
         //return (Ingredient) session.createCriteria(IngredientEntity.class).add(Restrictions.eq("name", ingredientName)).uniqueResult();
         return (Ingredient) session.load(IngredientEntity.class, ingredientName);
     }
 
-    public static Set<Ingredient> getAllIngredients(Session session) {
+    public static List<Order> getOrdersByDateDesc(Session session) {
         session.beginTransaction();
-        Set<Ingredient> ingredients = new HashSet<>(session.createCriteria(IngredientEntity.class).list());
+        List<Order> orders = session.createQuery("from OrderEntity order by dateTime desc ").list();
         session.getTransaction().commit();
-        return ingredients;
+        return orders;
+    }
+
+    // Returns null if not found
+    public static Order findOrder(Session session, long orderId) {
+        return (Order) session.load(OrderEntity.class, orderId);
     }
 }

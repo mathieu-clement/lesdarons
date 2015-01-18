@@ -62,6 +62,7 @@
         <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaEntity"/>
         <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.AddressEntity"/>
         <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.OrderEntity"/>
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaToOrderAssocEntity"/>
 
     </session-factory>
 

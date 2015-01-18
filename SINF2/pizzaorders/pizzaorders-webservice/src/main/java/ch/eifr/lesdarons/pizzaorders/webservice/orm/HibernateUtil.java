@@ -21,7 +21,8 @@ public class HibernateUtil {
             sessionFactory = configuration.buildSessionFactory(builder.buildServiceRegistry());
         } catch (Throwable ex) {
             // Make sure you log the exception, as it might be swallowed
-            logger.error("Initial SessionFactory creation failed." + ex);
+            logger.error("Initial SessionFactory creation failed: " + ex);
+            ex.printStackTrace();
             throw new ExceptionInInitializerError(ex);
         }
     }

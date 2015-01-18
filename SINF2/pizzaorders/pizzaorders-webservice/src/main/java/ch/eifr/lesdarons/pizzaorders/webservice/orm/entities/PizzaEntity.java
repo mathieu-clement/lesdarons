@@ -43,7 +43,7 @@ public class PizzaEntity implements Pizza {
     @Override
     @ManyToMany(targetEntity = IngredientEntity.class,
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER)
+            fetch = FetchType.LAZY)
     public Set<Ingredient> getIngredients() {
         return ingredients;
     }

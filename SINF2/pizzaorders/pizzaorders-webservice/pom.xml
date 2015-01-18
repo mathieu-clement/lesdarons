@@ -182,12 +182,12 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>4.2.16.Final</version>
+            <version>4.3.8.Final</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.2.145</version>
+            <version>1.4.184</version>
         </dependency>
         <!--
         <dependency>
