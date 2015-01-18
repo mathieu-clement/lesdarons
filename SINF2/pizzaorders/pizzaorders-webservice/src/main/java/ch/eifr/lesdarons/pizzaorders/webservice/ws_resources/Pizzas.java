@@ -47,7 +47,7 @@ public class Pizzas {
         return response;
     }
 
-    @POST
+    @PUT
     @Path("add")
     public Response addPizza(
             @FormParam("name") String name,

@@ -47,7 +47,7 @@ public class Orders {
         return response;
     }
 
-    @POST
+    @PUT
     @Path("add")
     public Response addOrder(
             @FormParam("name") String name,

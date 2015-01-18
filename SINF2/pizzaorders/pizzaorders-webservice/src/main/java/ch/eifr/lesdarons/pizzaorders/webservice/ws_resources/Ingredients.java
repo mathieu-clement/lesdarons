@@ -60,7 +60,7 @@ public class Ingredients {
         return response;
     }
 
-    @POST
+    @PUT
     @Path("add")
     public Response addIngredient(@FormParam("name") String name) {
         if (name == null) {
