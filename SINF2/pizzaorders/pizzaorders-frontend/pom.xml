@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>pizzaorders</artifactId>
+        <groupId>ch.eifr.lesdarons</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>ch.eifr.lesdarons.pizzaorders</groupId>
+    <artifactId>pizzaorders-frontend</artifactId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Source is in Java 7 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+
+            <!-- Tomcat 7 deployment -->
+            <!-- Invoke goal tomcat7:deploy -->
+            <!-- This may work with Tomcat 8, but you better stick with version 7 for
+                 best compatibility. -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <!-- Run before tests -->
+                    <execution>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>redeploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <path>/pizzaorders-frontend</path>
+                    <update>true</update>
+                    <url>http://localhost:8080/manager/text</url>
+                    <!--
+                    In Tomcat7 installation directory, add this to conf/tomcat-users.xml:
+
+                    <role rolename="manager-script"/>
+                    <user username="langid-script" password="secret-langid" roles="manager-script"/>
+
+                    NEVER give both manager-script and manager-gui roles as the text and jmx interfaces
+                    are not protected against CSRF!
+
+                    -->
+                    <username>langid-script</username>
+                    <!-- or use tomcat.username property -->
+                    <password>secret-langid</password>
+                    <!-- or use tomcat.password property -->
+                </configuration>
+            </plugin>
+
+            <!-- Integration tests -->
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- If implemented with JSF, we'll need all of this below
+        or at least it might be helpful. -->
+        <!--
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        -->
+
+        <!--
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+        -->
+        <!--
+        To configure log level:
+        http://stackoverflow.com/q/14544991/753136
+        http://www.slf4j.org/api/org/slf4j/impl/SimpleLogger.html
+        -->
+        <!--
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+        -->
+        <!--
+        <dependency>
+            <groupId>ch.eifr.lesdarons.pizzaorders</groupId>
+            <artifactId>pizzaorders-webservice</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        -->
+    </dependencies>
+
+</project>
