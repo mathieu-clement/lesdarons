@@ -56,7 +56,6 @@ public class Orders {
     // https://jcalcote.wordpress.com/2009/08/06/restful-transactions/
     @Path("begin")
     public Response beginOrder(
-            @FormParam("name") String name,
             @FormParam("firstName") String firstName,
             @FormParam("lastName") String lastName,
             @FormParam("streetName") String streetName,
@@ -65,11 +64,11 @@ public class Orders {
             @FormParam("city") String city,
             @FormParam("country") String country
     ) {
-        if (name == null || firstName == null || lastName == null || streetName == null ||
-                houseNumber == null || postalCode == null || postalCode == null ||
+        if (firstName == null || lastName == null || streetName == null ||
+                houseNumber == null || postalCode == null ||
                 city == null || country == null) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("One or more fields is missing from the request.").build();
+                    .entity("One or more fields are missing from the request.").build();
         }
 
         OrderEntity orderEntity = new OrderEntity();
@@ -88,7 +87,7 @@ public class Orders {
         OrderManager.getInstance().beginOrder(orderEntity);
 
         return Response.status(Response.Status.CREATED)
-                .header("Location", "" + orderEntity.getId()) // This is REST!
+                .header("Location", "/orders/" + orderEntity.getId()) // This is REST!
                 .entity("{\"id\": " + orderEntity.getId() + "}") // And this is for people who don't understand REST.
                 .build();
     }

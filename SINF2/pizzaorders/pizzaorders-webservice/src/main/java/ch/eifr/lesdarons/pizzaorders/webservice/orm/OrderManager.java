@@ -1,5 +1,6 @@
 package ch.eifr.lesdarons.pizzaorders.webservice.orm;
 
+import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.OrderEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaToOrderAssocEntity;
 import ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaToOrderAssocId;
 import ch.eifr.lesdarons.pizzaorders.webservice.skeleton.Order;
@@ -26,7 +27,7 @@ public class OrderManager {
     }
 
     // One call to this method must equal one call to cancel or commit.
-    public OrderEntry beginOrder(Order order) {
+    public OrderEntry beginOrder(OrderEntity order) {
 
         Session session = HibernateUtil.makeSession();
         Transaction transaction = session.getTransaction();
@@ -35,9 +36,9 @@ public class OrderManager {
         synchronized (this) {
             orderEntry = new OrderEntry(session, transaction, order);
             session.save(order);
-            session.flush();
-            assert order.getId() != -1;
-            orders.put(order.getId(), orderEntry);
+            Long idFromDb = (Long) session.getIdentifier(order);
+            order.setId(idFromDb);
+            orders.put(idFromDb, orderEntry);
         }
         return orderEntry;
 
