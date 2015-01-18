@@ -10,12 +10,16 @@ public interface Pizza {
     Set<Ingredient> getIngredients();
 
     public enum Size {
-        SMALL("small"), BIG("big");
+        SMALL, BIG;
 
-        private String name;
-
-        Size(String name) {      // this constructor is needed for @PathParam from Jersey
-            this.name = name;
+        public static Size fromString(String str) { // for Jersey
+            if("small".equalsIgnoreCase(str)) {
+                return SMALL;
+            } else if ("big".equalsIgnoreCase(str)) {
+                return BIG;
+            } else {
+                throw new IllegalArgumentException(str + " is not a known size");
+            }
         }
     }
 }
