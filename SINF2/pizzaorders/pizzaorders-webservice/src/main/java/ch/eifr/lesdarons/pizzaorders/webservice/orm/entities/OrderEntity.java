@@ -58,7 +58,7 @@ public class OrderEntity implements Order {
 
     @Override
     @MapsId("assocId")
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @OneToMany
     public Set<PizzaToOrderAssocEntity> getPizzas() {
         return pizzas;
     }
