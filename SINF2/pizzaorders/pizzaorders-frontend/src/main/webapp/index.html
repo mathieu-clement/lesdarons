@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html ng-app="">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.min.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+Liste pizzas:
+
+<div ng-controller="pizzaController">
+    <table border="1">
+        <tr>
+            <td>Qté</td>
+            <td>Nom</td>
+            <td>Prix (CHF)</td>
+            <td>Ingrédients</td>
+            <td></td>
+            <!-- Liens ajouter -->
+        </tr>
+
+        <tr ng-repeat="pizza in pizzas">
+            <td><input type="text" value="1"/></td>
+            <td>{{ pizza.name }}</td>
+            <td>{{ pizza.priceBig }}</td>
+            <td>
+                <ul>
+                    <li ng-repeat="ingredient in pizza.ingredients">{{ ingredient.name }}</li>
+                </ul>
+            </td>
+            <td><input ng-click="addPizza(pizza)" type="button" value="Ajouter"/></td>
+        </tr>
+    </table>
+
+    <div>
+        <h1>Ma commande</h1>
+        <ul>
+            <li ng-repeat="pizza in basket">
+                {{ pizza.name }}, {{ pizza.priceBig }} CHF
+            </li>
+        </ul>
+
+        Total TTC: {{ total }} CHF
+    </div>
+
+    <div>
+        <h1>Adresse de livraison</h1>
+        <form>
+            <input type="text" ng-model="firstName" placeholder="First name"/>
+            <input type="text" ng-model="lastName" placeholder="Last name"/><br/>
+            <input type="text" ng-model="streetName" placeholder="Street name"/>
+            <input type="text" ng-model="houseNumber" placeholder="No"/><br/>
+            <input type="text" ng-model="postalCode" placeholder="Postal code"/>
+            <input type="text" ng-model="city" placeholder="City"/><br/>
+            <input type="button" ng-click="sendOrder()" value="Envoyer la commande"/>
+        </form>
+    </div>
+
+    <hr/>
+
+    <div>
+        <h1>Commande des clients</h1>
+        <table>
+
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
