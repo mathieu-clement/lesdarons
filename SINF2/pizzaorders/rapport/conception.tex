@@ -3,7 +3,31 @@
 
 \subsection{But de l'application}
 
+Cette application composée d'une partie frontend et backend (web service)
+permet à des clients affamés de consulter la carte (avec nom des pizzas, liste des ingrédients
+et prix) d'un service de livraison de pizzas
+à domicile, de faire son choix et d'effectuer une commande après avoir entré une adresse de livraison.
+
+Une interface permet ensuite aux employés de consulter la liste des commandes pour préparer
+les pizzas et les faire livrer.
+
 \subsection{Architecture générale / MVC}
+
+\begin{tabular}{| l l p{11cm} |}
+\hline
+\bf Vue & HTML, CSS, AngularJS & La vue est constituée d'une page HTML unique mais permettant de passer
+                                 de la carte des pizzas au formulaire de commande. \\
+\hline
+\bf Contrôleur & AngularJS, Jersey & L'aspect gestion du panier du client et une partie de la validation
+                                     est effectuée côté navigateur, tandis que la mise à jour de la base
+                                     de données et une autre partie de la validation est réalisée
+                                     du côté du web service. \\
+\hline
+\bf Modèle & Entités Hibernate, BDD & Le modèle est géré grâce à des entités utilisant les annotations JPA.
+                                      Les requêtes à la base de données et l'implémentation de l'ORM
+                                      fait appel à Hibernate. \\
+    \hline
+\end{tabular}
 
 % AngularJS (single page) / Web Service / Hibernate / DB
 
