@@ -53,7 +53,7 @@
                 <configuration>
                     <path>/pizzaorders-ws</path>
                     <update>true</update>
-                    <url>http://localhost:8080/manager/text</url>
+                    <url>http://langid.tic.eia-fr.ch:8080/manager/text</url>
                     <!--
                     In Tomcat7 installation directory, add this to conf/tomcat-users.xml:
 

@@ -9,7 +9,7 @@ function pizzaController($scope, $http) {
         return str.join("&");
     };
 
-    var BASE_URL = "http://localhost:8080/pizzaorders-ws/rest";
+    var BASE_URL = "/pizzaorders-ws/rest";
 
     $scope.orders = [];
 
