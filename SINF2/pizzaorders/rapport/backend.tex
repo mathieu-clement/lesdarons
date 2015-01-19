@@ -125,7 +125,7 @@ Enfin, un défaut : à cause de la manière dont est implémentée la clé compo
 pour les pizzas commandées, on voit apparaître \verb|"assocId"| qui n'apporte aucune information.
 Il s'agirait alors de coder une exception dans la sérialisation JSON pour éviter ce problème, déjà
 qu'il a fallu déclarer le numéro de la commande qui figurait dans le \verb|"assocId"| comme \emph{transient}
-sinon cela causait un cycle. Le même comportement peut être observé avec \verb|toString()| cas de cycle ;
+sinon cela causait un cycle. Le même comportement peut être observé avec \verb|toString()| ;
 
     \item \verb|GET /orders/{orderId}| présente la même information mais pour une seule commande ;
 
@@ -158,7 +158,7 @@ Si la ressource n'existe pas encore, alors il fait sens de préférer \verb|PUT|
 
 Ce serait une aberration de faire un \verb|POST /orders/1/delete| au lieu de \verb|DELETE /orders/|.
 Quel horreur ! Malheureusement de nombreux
-web services utilisent \verb|POST| pour tout et n'importe quoi. Au final ils n'ont plus grand chose à voir
+web services utilisent \verb|POST| pour tout et n'importe quoi. Au final cela n'a plus grand chose à voir
 avec les principes REST, ni même HTTP pour certains \guillemets{bricolages} (erreurs rapportées
 dans du XML / JSON avec code de status 200\dots)
 
@@ -176,7 +176,8 @@ Nous avons notamment utilisé:
 \item[409 Conflict] Nous avons utilisé ce code n'ayant pas trouvé la \emph{best practice} si une ressource
                     existe déjà.
 \item[410 Gone] pour les cas où l'on sait pertinemment qu'il existait une ressource à l'adresse
-                demandée mais qu'elle ne réapparaîtra pas.
+                demandée mais qu'elle ne réapparaîtra pas. Indique au client de cesser de faire des
+                requêtes sur cette ressource puisqu'elle est \guillemets{partie}.
 \end{description}
 
 \subsection{Accès aux données}
@@ -228,21 +229,21 @@ Le voici :
         <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaEntity"/>
         <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.AddressEntity"/>
         <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.OrderEntity"/>
-        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaToOrderAssocEntity"/>
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice ... PizzaToOrderAssocEntity"/>
 
     </session-factory>
 
 </hibernate-configuration>
 \end{xmlcode}
 
-Le principe \emph{Convention-over-Configuration} est adopté pour\dots l'emplacement de ce fichier.
+Le principe \emph{Convention-over-Configuration} est adopté pour\dots~l'emplacement de ce fichier.
 En le mettant dans le dossier \verb|src/main/resources/| et en le nommant \verb|hibernate.cfg.xml|
 alors il ne sera pas nécessaire de préciser où il se trouve à l'initialisation.
 
 \subsubsection{Bavardage}
 
 Dans le fichier de configuration nous avons activé l'affichage des requêtes SQL (et non pas HQL ici). 
-C'est particulièrement utile pour vérifier non seulement pour déboguer en cas de problèmes, mais
+C'est particulièrement utile non seulement pour déboguer en cas de problème, mais
 aussi pour vérifier que le framework fait bien ce que l'on attend de lui (pour contrôler que la cardinalité 
 d'une relation est bien celle que l'on pense par exemple), ainsi que pour trouver la source
 d'éventuelles lenteurs.
@@ -263,14 +264,14 @@ Le journal de Tomcat affiche alors, par exemple :
         ingredient0_.pizzas_name=?
 \end{sqlcode}
 
-Notez la présence du point d'interrogation. Ceci permet de se prémunir d'attaques XSS et est géré entièrement
+Notez la présence du point d'interrogation. Il permet de se prémunir d'attaques XSS et est géré entièrement
 par Hibernate pour autant que l'API appropriée soit appelée. Nous le verrons plus loin dans ce document  lorsque
 nous évoquerons certaines requêtes particulières.
 
 \subsubsection{Insertion des données initiales}
 
 Plus pour l'exercice qu'autre chose (car le plus simple aurait été d'insérer directement les données
-dans la base de données) nous avons intégré au service la possibilité d'insérer des pizzas, des ingrédients
+dans la base de données) nous avons intégré au web service les méthodes pour insérer des pizzas, des ingrédients
 et associer les seconds aux premières.
 
 Mais nous n'allions quand même pas coder l'insertion des données initiales en dur dans du code Java.
@@ -292,9 +293,9 @@ Nous lisons plutôt le fichier XML suivant :
 </pizzas>
 \end{xmlcode}
 
-Par-contre, pour être tout à fait honnête, il faut dire que le code qui lit le XML et effecture
+Par-contre, pour être tout à fait honnête, il faut dire que le code qui lit le XML et effectue
 ensuite les appels au web service n'est pas des plus beaux. La faute à l'API vieillissante du DOM en Java.
-Peut-être utiliserons JDOM la prochaine fois.
+Peut-être utiliserons-nous JDOM la prochaine fois.
 
 Exemple navrant:
 
@@ -319,7 +320,8 @@ d'un odieux \emph{getNodeType()} mais nous nous éloignons du sujet de ce travai
 
 \cprotect\subsubsection{\verb|web.xml|}
 
-Nous avons déjà vu le \verb|web.xml| à utiliser avec Jersey, mais nous devons y ajouter
+Nous avons déjà vu le \verb|web.xml| à utiliser avec Jersey lors du travail pratique qui a introduit le framework, 
+mais nous devons y ajouter
 un moyen d'initialiser certains aspects d'Hibernate. Il est possible d'enregistrer
 un \emph{listener} comme ceci:
 
@@ -342,7 +344,8 @@ un \emph{listener} comme ceci:
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
-    <!-- ICI -->
+    <!-- ICI on peut "plugger" des classes pour executer du code au "deploy" et "undeploy"
+         de l'application. -->
     <listener>
         <listener-class>ch.eifr.lesdarons.pizzaorders ... HibernateListener</listener-class>
     </listener>
@@ -377,16 +380,15 @@ public class HibernateListener implements ServletContextListener {
 }
 \end{javacode}
 
-Vous pouvez consulter l'implémentation de la class \verb|HibernateUtil| elle ne contient rien d'intéressant
+Vous pouvez consulter l'implémentation de la classe \verb|HibernateUtil|. Elle ne contient rien d'intéressant
 si ce n'est un \verb|new Configuration().configure()| au milieu qui va lire le fichier de configuration
 d'Hibernate. L'objet retourné par la méthode permet alors de récupérer la \verb|SessionFactory|.
-
 Celle-ci en main il suffit d'appeler \verb|sessionFactory.openSession()| pour créer une session vers la 
 base de données.
 
 Notons l'importance de refermer la session. Les logs informent rapidement du problème en avertissant
 qu'une fuite de mémoire est probable. Il faut bien faire attention à traiter les exceptions correctement
-pour éviter le problème.
+pour éviter cette situation.
 
 \subsubsection{Requêtes HQL}
 
@@ -404,12 +406,13 @@ Si par hasard nous avions un autre ID mais que nous savons que le nom de la pizz
 aurions pu faire
 
 \begin{javacode}
-return (Pizza) session.createCriteria(PizzaEntity.class).add(Restrictions.eq("name", pizzaName)).uniqueResult();
+return (Pizza) session.createCriteria(PizzaEntity.class)
+                      .add(Restrictions.eq("name", pizzaName))
+                      .uniqueResult();
 \end{javacode}
 
 Dans certains scénarios plus compliqués, Hibernate est un peu perdu et on se retrouve avec des informations manquantes,
-il n'appelle pas les \emph{setters} de certaines relations. Un \emph{workaround} possible, il existe probablement
-des solutions plus élégantes :
+il n'appelle pas les \emph{setters} de certaines relations. Voici un \emph{workaround} possible :
 
 \begin{javacode}
 // Returns null if not found
@@ -453,9 +456,9 @@ spécifique à Hibernate. Pas grand chose d'ailleurs, juste \verb|Query| et \ver
 
 Nous avons d'un côté des pizzas et d'un autre côté les commandes avec l'adresse de livraison.
 
-Finalement, un item de la commande ce n'est rien d'autre qu'une entité affublée plus quelques informations
-comme la taille de la pizza commandée et la quantité. C'est un cas d'école du modèle entité-association
-tel qu'étudié au cours de Bases de données 1.
+Finalement, un item de la commande ce n'est rien d'autre qu'une entité affublée de quelques informations supplémentaires
+comme la taille de la pizza commandée et la quantité. C'est un cas classique traduisible facilement dans le modèle 
+entité-association étudié au cours \emph{Bases de données 1.}
 
 Par-contre, du point de vue JPA, c'est un vrai casse-tête !
 
@@ -469,13 +472,13 @@ Dans la classe \verb|Order| :
     }
 \end{javacode}
 
-À propos, un paramètre permet de demander un chargement \guillemets{eagerly} (soit le contraire du \emph{lazy loading})
+À propos, un paramètre permet de demander un chargement façon \emph{eagerly} (soit le contraire du \emph{lazy loading})
 des pizzas, mais cela n'a pas réglé le problème mentionné à la sous-section précédente.
 
 Nous avons dû recourir à une entité d'association (\verb|PizzaToOrderAssocEntity| que nous aurions aussi
 pu appeller \verb|OrderItemEntity| par exemple)
 étant donné que nous avons ajouté deux champs qui ne font pas partie de la clé de l'association.
-Une chose que cette classe doit contenir, c'est ça :
+Une chose que la classe \verb|PizzaToOrderAssocEntity| doit contenir, c'est ça :
 
 \begin{javacode}
     @EmbeddedId
@@ -487,7 +490,7 @@ Une chose que cette classe doit contenir, c'est ça :
 Il n'y a pas d'autre champ portant l'annotation \verb|@Id|. L'\verb|EmbeddedId| est la solution
 à adopter pour les clés composées.
 
-Et enfin cette dernière classe \verb|PizzaToOrderAssocId|:
+Et enfin, \verb|PizzaToOrderAssocId|:
 
 \begin{javacode}
 @Embeddable
@@ -514,14 +517,14 @@ le champ \verb|assocId| apparaîtra aux clients, ce qui n'est ni élégant ni m�
 
 Conclusion : Il vaut peut-être mieux laisser le framework utiliser des clés qui sont des numéros de séquence
 et imposer des contraintes sur les tables pour respecter les restrictions du modèle. Les \emph{best practices}
-voudraient pourtant que les contraintes doivent être exprimées via la structure des tables autant que possible.
+voudraient pourtant que les contraintes soient exprimées grâce à la structure des tables autant que possible.
 
 
 \subsubsection{Une clé qui n'est pas un numéro de séquence}
 
 Puisque nous parlons de numéros de séquence, nous avons déjà remarqué que les frameworks tels que \emph{django}
-utilisent un ID numérique à tout bout de champ. Un bon design de base de données en décourage l'usage
-dans la plupart des cas. On peut facilement, avec JPA, demander d'autres types d'identifiants pour les entités.
+utilisent un ID numérique à tout bout de champ. Un bon design de base de données en décourage pourtant l'usage
+dans la plupart des cas. On peut facilement, avec JPA, demander d'autres types d'identifiant pour les entités.
 
 Voyons par exemple comment définir une chaîne de caractères comme clé d'une table :
 
@@ -534,7 +537,7 @@ Voyons par exemple comment définir une chaîne de caractères comme clé d'une 
     }
 \end{javacode}
 
-Une chose importante à noter. Si dans le cas d'un numéro de séquence nous trouvons le code suivant :
+Une chose importante à noter, si avec un numéro de séquence nous trouvons le code suivant :
 
 \begin{javacode}
     @Id
@@ -556,8 +559,8 @@ par la transaction en cours.
 
 \subsubsection{Gestion des transactions}
 
-Des transactions, nous en avons une dans notre application. On aurait pu les éviter,
-mais nous trouvions intéressant d'étudier comment celles-ci pouvaient être mises en places dans un web service REST.
+Des transactions, nous en avons dans notre application. On aurait pu les éviter,
+mais nous trouvions intéressant d'étudier comment celles-ci pouvaient être mises en place dans un web service REST.
 Dans tous les cas, notons que SOAP est bien plus adapté dans de tels cas de figure puisque le support des transactions
 fait partie intégrante des spécifications.
 
@@ -567,24 +570,44 @@ ici en version simplifiée :
 \begin{enumerate}
     \item Le client indique au serveur qu'il veut commencer une nouvelle transaction. Il obtient en retour
           un identifiant pour la transaction qu'il devra utiliser ensuite. Cet identifiant devrait, dans l'idéal,
-          être transmis sous la forme de l'en-tête HTTP \verb|"Location"| puisque c'est bien cette information
-          que cette dernière décrit.
+          être transmis sous la forme de l'en-tête HTTP \verb|Location| puisque c'est bien cette information
+          que ce dernier décrit.
     \item En utilisant cet identifiant de transaction et l'URL indiquée à l'étape précédente, le client
-          réalise des opérations dans la transaction.
-    \item Lorsqu'il a terminé le client peut à choix :
+          réalise des opérations dans le cadre de la transaction.
+    \item Lorsqu'il a terminé le client peut, à choix :
     \begin{enumerate}[label=\alph*]
-        \item Annuler la transaction \emph{(rollback)}
-        \item Clore la transaction   \emph{(commit)}
+        \item Annuler la transaction \emph{(rollback)} ;
+        \item Clore la transaction   \emph{(commit)}.
     \end{enumerate}
 \end{enumerate}
 
-Nous ne détaillerons pas ici comment nous avons géré les transactions en cours. Vous pouvez néanmoins
+Nous ne détaillerons pas ici comment nous avons géré les commandes commencées mais pas terminées. Vous pouvez néanmoins
 consulter le code de la classe \verb|OrderManager| si cela vous intéresse.
 
 Le petit soucis à régler du point de vue du serveur est de poser un délai \emph{(timeout)} pour éviter
 de garder éternellement des transactions ni confirmées, ni annulées. Il s'agirait ensuite
 de réaliser une sorte de ramasse-miettes qui irait de temps en temps faire un \emph{rollback} des transactions
-restées inactives trop longtemps.
+restées inactives trop longtemps et fermer les sessions correspondantes.
 
 \subsection{JSON}
 
+Nous avons utilisé la bibliothèque Gson de Google pour sérialiser les objets en JSON. Un problème que l'on rencontre
+immédiatement avec cette solution est que quand on pense récupérer les classes entité que l'on a mis dans la base
+de données lorsqu'on interroge cette dernière, on récupère en réalité une sous-classe implémentant 
+\verb|HibernateProxy| que Gson ne sait pas sérialiser.
+
+Dans la classe \verb|GsonForHibernate| qui est un Singleton, nous gardons une instance permanente
+de l'objet Gson configuré à notre sauce pour prendre en charge les entités.
+
+Le secret consiste à enregistrer un \emph{TypeAdapter} qui va aller visiter les objets
+référencés par l'entité de manière récursive. Cette approche amène par ailleurs différents problèmes ou limitations :
+
+\begin{itemize}
+    \item Le JSON généré correspond \emph{exactement} aux membres des entités. On est parfois
+          amené à devoir écrire du code dont la structure n'est pas idéale, souvent à cause de conventions
+          adoptés par des frameworks. Voir \verb|"assocId"|.
+    \item La récursivité naïve va générer une boucle infinie en cas de cycle. Une solution
+          consiste à casser cette récursivité en enlevant un attribut de la sérialisation. Une manière
+          rapide de le faire est de déclarer l'attribut concerné comme \verb|transient| mais de meilleures
+          solutions existent\footnote{\url{http://stackoverflow.com/a/14489534/753136}}.
+\end{itemize}
