@@ -20,7 +20,7 @@
 
 \usepackage{wasysym}
 
-\usepackage{babel}
+\usepackage[frenchb]{babel}
 
 \usepackage{textpos}
 
@@ -46,6 +46,7 @@
 \usemintedstyle{colorful} %colorful, pastie, friendly are nice
 \newminted{prolog}{fontsize=\footnotesize}
 \newminted{java}{fontsize=\footnotesize}
+\newminted{html}{fontsize=\footnotesize}
 \newminted{xml}{fontsize=\footnotesize}
 \newminted{sql}{fontsize=\footnotesize}
 \newminted{javascript}{fontsize=\footnotesize}
@@ -67,9 +68,13 @@
 
 \begin{document}
 \chead{SINF2 -- TP12}
-\eiafullpagetitlewithtocandribbon{} % use *fat* ribbon for very long titles
+\eiafullpagetitle{} % use *fat* ribbon for very long titles
 
 \cleardoublepage % First page of text must be on the right
+
+\tableofcontents
+
+\cleardoublepage
 
 \section*{Introduction}
 \setcounter{page}{1}
@@ -85,23 +90,26 @@ Pour réalisé cette application nous avons utilisé ces technologies :
 \item REST
 \end{itemize}
 
+\input{intro}
+
 \input{conception}
 
 \input{backend}
 
 \input{frontend}
 
-\section{Validation}
-
-% captures d'écran de Postman
-% assocId
+\input{validation}
 
 \input{production}
 
 \input{organisation}
 
+<<<<<<< HEAD
 \section*{Conclusion}
 Nous avons apprécié faire ce travail. La liberté de choisir son thème et de ne pas avoir de restriction sur les technologies fait de cette expérience, une chose agréable. On aime pouvoir faire des choix, bon ou mauvais parfois, mais au moins on dois les assumer et on ne peut pas dire que c'est inutile ou qu'on ne l'utiliserai pas.
+=======
+\input{conclusion}
+>>>>>>> b321e078f748e2e77d88b49794eccfeed1239485
 
 Sur le travail en lui-même, on aurait aimé faire plus pour la partie front-end, malheureusement le temps pour nous est précieux ! Nous avons priorisé le côté serveur plutôt que l'interface client. Il y a deux raisons à cela, la première est que nous avons fait le choix d'avoir quelque chose de solide en arrière car c'est souvent la source de beaucoup d'erreurs. La deuxième raison est que nous savons créer des interfaces intuitif et que c'est relativement facile à contrario, faire une gestion dite "back-end" est beaucoup plus complexe et nous avons priorisé notre temps dessus.
 
