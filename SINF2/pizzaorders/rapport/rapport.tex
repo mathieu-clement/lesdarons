@@ -1,0 +1,95 @@
+%
+% IMPORTANT:
+% Document must be compiled with -shell-escape
+%
+\documentclass[twoside]{eiaArticle} 
+%~ graphics path
+%\graphicspath{resources/}
+
+% ------------------------------------------------------------------------------
+% Metadata
+% ------------------------------------------------------------------------------
+\usepackage{eiautils}
+\usepackage{cleveref}
+\usepackage{fancyvrb,cprotect} % cprotect for Verb in \*section{} command
+\usepackage{emptypage}
+
+% Faire apparaître les notes de bas de page insérées dans un tableau
+\usepackage{footnote}
+\makesavenoteenv{tabular}
+
+\usepackage{wasysym}
+
+\usepackage{babel}
+
+\usepackage{textpos}
+
+% basé sur s09
+
+\title{Mini-projet }
+\date{19 janvier 2015}
+
+\eiasetupmeta[
+    course=Systèmes d'information 2,  % also change after \begin{document} !!!
+    tpno=S10, % also change after \begin{document} !!!
+    author=Mathieu Cl\'ement, 
+    authortwo=Bryan Piller, 
+    class=TIC / I-3,
+    prof=Omar {Abou Khaled} Stefano Carrino Joël Dumoulin,
+    date=\thedate
+]{}
+
+\author{ \eiaauthors }
+\eiasetuphdr
+
+\usepackage{minted}
+\usemintedstyle{colorful} %colorful, pastie, friendly are nice
+\newminted{prolog}{fontsize=\footnotesize}
+\newminted{java}{fontsize=\footnotesize}
+\newminted{xml}{fontsize=\footnotesize}
+\newminted{sql}{fontsize=\footnotesize}
+\newminted{javascript}{fontsize=\footnotesize}
+
+\newcommand\bellecitation[1]{\qquad\qquad \makebox{\emph{\guillemets{#1}}}}
+
+\newcommand\bigsmile{{\LARGE\smiley{}}}
+
+\usepackage{amssymb}% http://ctan.org/pkg/amssymb
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+\newenvironment{absolutelynopagebreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
+
+\begin{document}
+\chead{SINF2 -- TP12}
+\eiafullpagetitlewithtocandribbon{} % use *fat* ribbon for very long titles
+
+\cleardoublepage % First page of text must be on the right
+
+\section*{Introduction}
+\setcounter{page}{1}
+
+\input{conception}
+
+\input{backend}
+
+\input{frontend}
+
+\section{Validation}
+
+% captures d'écran de Postman
+% assocId
+
+\input{production}
+
+\input{organisation}
+
+\section*{Conclusion}
+
+\end{document}
+
