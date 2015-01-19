@@ -2,5 +2,106 @@
 
 % Compilation, dépendances, déploiement, properties
 
+Apache Maven s'est avéré pratique pour ce projet.
+En plus de gérer impeccablement les dépendances, il nous a aussi
+permis de déployer le WAR sur Tomcat.
 
+\subsubsection{Téléchargement des sources}
 
+Il est quasiment indispensable de posséder au moins la documentation
+des APIs lorsque l'on utilise des bibliothèques et composants tiers.
+
+Les sources peuvent aussi s'avérer utiles dans certains cas, 
+lorsque la documentation est lacunaire ou pour comprendre
+d'où proviennent certains bugs et messages d'erreur.
+
+Les IDE comme IntelliJ IDEA vont chercher les sources au même endroit
+qu'ils trouvent les artéfacts. On peut demander à Maven de télécharger
+les sources au moyen de la commande 
+
+\verb|mvn dependency:source|
+
+\subsubsection{Déploiement sur Tomcat}
+
+Tomcat dispose d'un \guillemets{accès script} (en fait via JMX) que l'on peut utiliser
+pour déployer des web applications. L'autre solution consiste à
+copier le WAR (ou son contenu, ce qui est par exemple dénommé \emph{exploded WAR} dans IntelliJ IDEA) 
+dans le dossier \verb|webapps| surveillé par Tomcat,
+un mécanisme commun à de nombreux \emph{servlet containers.}
+
+Voici la configuration à ajouter dans le \verb|pom.xml|:
+
+\begin{xmlcode}
+<project>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <!-- Run before integration tests -->
+                    <execution>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>redeploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <path>/pizzaorders-ws</path>
+                    <update>true</update>
+                    <url>http://localhost:8080/manager/text</url>
+                    <!--
+                    In Tomcat7 installation directory, add this to conf/tomcat-users.xml:
+
+                    <role rolename="manager-script"/>
+                    <user username="my-script-username" 
+                          password="my-secret" 
+                             roles="manager-script"/>
+
+                    NEVER give both manager-script and manager-gui roles 
+                    as the text and JMX interfaces
+                    are not protected against CSRF!
+
+                    -->
+                    <username>langid-script</username>
+                    <!-- or use tomcat.username property -->
+                    <password>secret-langid</password>
+                    <!-- or use tomcat.password property -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+\end{xmlcode}
+
+Voir le commentaire XML concernant la configuration à ajouter à Tomcat et les précautions à prendre.
+
+Ici nous avons indiqué vouloir que l'application soit déployée dans tous les cas
+afin de pouvoir exécuter les tests d'intégration. Si on retire la section \verb|<executions>|
+on peut alors demander le déploiement sur Tomcat avec \verb|mvn tomcat7:deploy|.
+
+Notez que bien que le plugin a été développé à l'origine pour Tomcat 7.0, il fonctionne toujours avec Tomcat 8.0.
+
+\subsubsection{Propriétés}
+
+Il est courant de devoir indiquer une information à de multiples reprises dans le \verb|pom.xml|.
+Pour éviter la répétition, il est de coutume d'utiliser une propriété.
+
+Exemple :
+
+\begin{xmlcode}
+<project>
+    <properties>
+        <jersey.version>2.15</jersey.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>${jersey.version}</version>
+    </dependencies>
+</project>
+\end{xmlcode}

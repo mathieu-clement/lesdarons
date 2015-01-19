@@ -3,50 +3,588 @@
 
 \subsection{Technologies utilisées}
 
-\subsection{Web Service}
+\begin{itemize}
+    \item Hibernate ORM
+    \item Hibernate H2 in-memory database (pour le développement)
+    \item PostgreSQL (en production)
+    \item JPA annotations
+    \item Jersey REST framework, implémentation de référence de JAX-RS
+    \item Gson pour sérialisation JSON
+    \item SLF4J pour les logs
+\end{itemize}
 
-\cprotect\subsubsection{\verb|web.xml|}
+\subsection{Journaux (logging)}
+
+Si imprimer sur la console constitue une mauvaise idée, il est en revanche utile
+d'utiliser un \emph{logger.} Nous avons apprécié SLF4J car il se marie bien
+avec le système de logging interne à Tomcat (qui utilise probablement Log4j 
+puisque les deux sont issus du projet Apache). Le log courant de Tomcat
+est \verb|$CATALINA_HOME/logs/catalina.out|~.
+
+En plus de la déclaration de la dépendance avec Maven, il faut avant de pouvoir
+utiliser le logger le déclarer dans la classe. Voici un exemple:
+
+\begin{javacode}
+private static final Logger logger = LoggerFactory.getLogger(
+                     "pizzaorders.webservice.HibernateListener");
+\end{javacode}
+
+Il est ensuite aisé d'écrire des entrées d'information, de déboggage ou des erreurs dans le journal.
+
+\subsection{Web Service}
 
 \subsubsection{Chemins REST}
 
-% header Location
+Le fichier WADL permet bien entendu de voir comment intéragir avec l'application.
+Ici nous nous contenterons d'une courte explication et d'un exemple.
+
+Les URLs sont raccourcies par question de lisibilité. 
+On les préfixera par exemple avec \verb|http://localhost:8080/pizzaorders-ws/rest|.
+
+\begin{itemize}
+    \item \verb|GET /pizzas| liste toutes les pizzas avec leurs ingrédients :
+\begin{jsoncode}
+[
+    {
+        "name": "Margherita",
+        "priceBig": 15,
+        "priceSmall": 12,
+        "ingredients": [
+            {  "name": "tomates"          },
+            {  "name": "basilic frais"    },
+            {  "name": "mozzarella"       }
+        ]
+    },
+    {
+        "name": "Regina",
+        etc.
+    }
+]
+\end{jsoncode}
+
+    \item \verb|GET /pizzas/{pizzaName}| donne la même information mais pour une pizza précise ;
+
+    \item \verb|PUT /pizzas/{pizzaName}| permet d'ajouter une nouvelle pizza au système ;
+
+    \item \verb|PUT /ingredients/{ingredientName}| permet d'ajouter un nouvel ingrédient au système ;
+
+    \item \verb|POST /ingredients/forPizza/{pizzaName}/{ingredientName}/| ajoute un ingrédient
+           à une pizza. La base de données étant normalisée (3FN) cette association fait l'objet
+           d'une table séparée. Relation \emph{Many-to-Many} ;
+
+    \item \verb|GET /orders| affiche la liste de toutes les commandes :
+\begin{jsoncode}
+[
+    {
+        "id": 1,
+        "dateTime": "Jan 19, 2015 7:56:55 PM",
+        "deliveryAddress": {
+            "id": 1,
+            "firstName": "Jean-Nicolas",
+            "lastName": "Aebischer",
+            "streetName": "Pérolles",
+            "houseNumber": "80",
+            "postalCode": "1700",
+            "city": "Fribourg",
+            "country": "Suisse"
+        },
+        "pizzas": [
+            {
+                "assocId": {
+                    "pizza": {
+                        "name": "Margherita",
+                        "priceBig": 15,
+                        "priceSmall": 12,
+                        "ingredients": [
+                            {  "name": "tomates"          },
+                            {  "name": "basilic frais"    },
+                            {  "name": "mozzarella"       }
+                        ]
+                    }
+                },
+                "quantity": 2,
+                "pizzaSize": "SMALL"
+            },
+            etc.
+        ]
+    },
+    etc.
+]
+\end{jsoncode}
+
+Note : on pourrait se contenter de reprendre uniquement le nom de la pizza mais cela peut amener
+des problèmes. Par exemple si on veut calculer le montant des commandes du mois mais
+que le prix de la pizza a changé entre-temps. Le même problème s'applique aux ingrédients.
+
+On pourrait aussi améliorer le format de la date, utile à l'humain mais plus compliqué que d'autres
+formats à parser par la machine. Cela est dû au fait que le convertisseur JSON a vraisemblablement utilisé
+la méthode \verb|toString()| de \verb|Date|.
+
+Enfin, un défaut : à cause de la manière dont est implémentée la clé composée 
+(quadruplet numéroCommande, nomPizza, taillePizza, quantité) 
+pour les pizzas commandées, on voit apparaître \verb|"assocId"| qui n'apporte aucune information.
+Il s'agirait alors de coder une exception dans la sérialisation JSON pour éviter ce problème, déjà
+qu'il a fallu déclarer le numéro de la commande qui figurait dans le \verb|"assocId"| comme \emph{transient}
+sinon cela causait un cycle. Le même comportement peut être observé avec \verb|toString()| cas de cycle ;
+
+    \item \verb|GET /orders/{orderId}| présente la même information mais pour une seule commande ;
+
+    \item \verb|POST /orders/begin| débute une transaction \guillemets{Commande}. Ceci est détaillé
+                                    plus loin dans ce document. Cette ressource REST retourne le numéro
+                                    de la commande que l'on devra utiliser plus tard.
+
+                                    Pour adhérer à la philosophie REST nous mettons l'en-tête \emph{Location}
+                                    à  \verb|/orders/{orderId}|. Mais comme nous sommes sympas nous retournons
+                                    aussi \verb|{"id": 1}| pour faciliter le travail des développeurs ;
+
+    \item \verb|POST /orders/{orderId}/{qty}/{pizzaSize}/{pizzaName}| ajoute une pizza de la taille voulue
+            dans la quantité voulue à la commande. On n'aurait peut-être pas dû passer la quantité, la taille de
+            la pizza et son nom dans l'URL, car il n'y a pas réellement de \guillemets{ressource} à cet endroit ;
+
+    \item \verb|POST /orders/{orderId}/confirm| permet de finaliser la commande. On passe dans la forme
+            \verb|x-www-form-urlencoded| (par défaut de Jersey) l'adresse de livraison ;
+
+    \item \verb|DELETE /orders/{orderId}| permet d'annuler la commande et interrompre la transaction.
+\end{itemize}
 
 \cprotect\subsubsection{\verb|PUT| et \verb|POST|}
 
+Dans la littérature, il est dit que l'on devrait utiliser \verb|POST|  pour mettre à jour une ressource.
+Si la ressource n'existe pas encore, alors il fait sens de préférer \verb|PUT|.
+
+\url{https://jcalcote.wordpress.com/2009/08/06/restful-transactions/}
+
 \cprotect\subsubsection{\verb|DELETE|}
+
+Ce serait une aberration de faire un \verb|POST /orders/1/delete| au lieu de \verb|DELETE /orders/|.
+Quel horreur ! Malheureusement de nombreux
+web services utilisent \verb|POST| pour tout et n'importe quoi. Au final ils n'ont plus grand chose à voir
+avec les principes REST, ni même HTTP pour certains \guillemets{bricolages} (erreurs rapportées
+dans du XML / JSON avec code de status 200\dots)
 
 \subsubsection{Codes de statut HTTP}
 
+D'ailleurs, parlons de la bonne utilisation des codes de statut HTTP.
+
+Nous avons notamment utilisé:
+
+\begin{description}
+\item[200 OK] Opération réussie
+\item[201 Created] Ressource créée avec succès (par exemple pizza, ingrédient, commande, etc.)
+\item[400 Bad Request] Erreur dans les paramètres ou les données, faute à l'utilisateur
+\item[404 Not Found] La ressource n'existe pas (par exemple pas de commande avec le numéro indiqué)
+\item[409 Conflict] Nous avons utilisé ce code n'ayant pas trouvé la \emph{best practice} si une ressource
+                    existe déjà.
+\item[410 Gone] pour les cas où l'on sait pertinemment qu'il existait une ressource à l'adresse
+                demandée mais qu'elle ne réapparaîtra pas.
+\end{description}
+
 \subsection{Accès aux données}
 
-\subsubsection{Technologies utilisées}
+Comme indiqué au début de cette section, nous avons fait appel à Hibernate, aux annotations JPA
+et à la base de données H2 d'Hibernate pour le stockage pendant la phase de développement.
 
-% Hibernate + H2 + JPA annotations
+\subsubsection{Configuration Hibernate}
 
-% Montrer les requêtes dans le log de Tomcat
+Si Hibernate dans ses dernières versions permet d'utiliser les annotations à bien des égards, il
+est toujours nécessaire de créer un fichier de configuration.
+
+Le voici :
+
+\begin{xmlcode}
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- Database connection settings -->
+        <property name="connection.driver_class">org.h2.Driver</property>
+        <property name="connection.url">jdbc:h2:mem:db1;DB_CLOSE_DELAY=-1;MVCC=TRUE</property>
+        <property name="connection.username">sa</property>
+        <property name="connection.password"/>
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <property name="current_session_context_class">thread</property>
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.H2Dialect</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+        <property name="format_sql">true</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hbm2ddl.auto">create</property>
+
+        <!--
+        <mapping resource="org/hibernate/tutorial/hbm/Event.hbm.xml"/>
+        -->
+        <!-- mapping package ? -->
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.IngredientEntity"/>
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaEntity"/>
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.AddressEntity"/>
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.OrderEntity"/>
+        <mapping class="ch.eifr.lesdarons.pizzaorders.webservice.orm.entities.PizzaToOrderAssocEntity"/>
+
+    </session-factory>
+
+</hibernate-configuration>
+\end{xmlcode}
+
+Le principe \emph{Convention-over-Configuration} est adopté pour\dots l'emplacement de ce fichier.
+En le mettant dans le dossier \verb|src/main/resources/| et en le nommant \verb|hibernate.cfg.xml|
+alors il ne sera pas nécessaire de préciser où il se trouve à l'initialisation.
+
+\subsubsection{Bavardage}
+
+Dans le fichier de configuration nous avons activé l'affichage des requêtes SQL (et non pas HQL ici). 
+C'est particulièrement utile pour vérifier non seulement pour déboguer en cas de problèmes, mais
+aussi pour vérifier que le framework fait bien ce que l'on attend de lui (pour contrôler que la cardinalité 
+d'une relation est bien celle que l'on pense par exemple), ainsi que pour trouver la source
+d'éventuelles lenteurs.
+
+Le journal de Tomcat affiche alors, par exemple :
+
+\begin{sqlcode}
+    select
+        ingredient0_.pizzas_name as pizzas_n1_5_0_,
+        ingredient0_.ingredients_name as ingredie2_6_0_,
+        ingredient1_.name as name1_2_1_ 
+    from
+        pizzas_ingredients ingredient0_ 
+    inner join
+        ingredients ingredient1_ 
+            on ingredient0_.ingredients_name=ingredient1_.name 
+    where
+        ingredient0_.pizzas_name=?
+\end{sqlcode}
+
+Notez la présence du point d'interrogation. Ceci permet de se prémunir d'attaques XSS et est géré entièrement
+par Hibernate pour autant que l'API appropriée soit appelée. Nous le verrons plus loin dans ce document  lorsque
+nous évoquerons certaines requêtes particulières.
 
 \subsubsection{Insertion des données initiales}
 
-% Lecture du XML
-% Montrer le XML
+Plus pour l'exercice qu'autre chose (car le plus simple aurait été d'insérer directement les données
+dans la base de données) nous avons intégré au service la possibilité d'insérer des pizzas, des ingrédients
+et associer les seconds aux premières.
 
-\cprotect\subsubsection{Création de la \verb|SessionFactory|}
+Mais nous n'allions quand même pas coder l'insertion des données initiales en dur dans du code Java.
+Nous lisons plutôt le fichier XML suivant :
 
-% HibernateListener
+\begin{xmlcode}
+<?xml version="1.0" encoding="UTF-8"?>
+<pizzas>
+    <pizza>
+        <name>Margherita</name>
+        <price small="12" big="15"/>
+        <ingredients>
+            <ingredient>mozzarella</ingredient>
+            <ingredient>basilic frais</ingredient>
+            <ingredient>tomates</ingredient>
+        </ingredients>
+    </pizza>
+    etc.
+</pizzas>
+\end{xmlcode}
 
-\cprotect\subsubsection{\verb|SessionFacade|}
+Par-contre, pour être tout à fait honnête, il faut dire que le code qui lit le XML et effecture
+ensuite les appels au web service n'est pas des plus beaux. La faute à l'API vieillissante du DOM en Java.
+Peut-être utiliserons JDOM la prochaine fois.
 
-% ORMFacade
+Exemple navrant:
 
-\subsubsection{Problèmes des clés composées}
+\begin{javacode}
+XPathExpression ingredientXPath = XPathFactory.newInstance().newXPath().compile("//ingredient");
+NodeList ingredientNodeList = (NodeList) ingredientXPath.evaluate(doc, XPathConstants.NODESET);
+for (int i = 0; i < ingredientNodeList.getLength(); i++) {
+    Node node = ingredientNodeList.item(i);
+    if(node.getNodeType() != Node.ELEMENT_NODE) continue;
 
-% AssocEntity + AssocId
+    Element element = (Element) node;
+    String ingredientName = element.getTextContent();
+    // etc.
+}
+\end{javacode}
+
+Notons le fait qu'une \verb|NodeList| ne soit pas itérable. La classe devrait implémenter l'interface du même nom
+introduite par Java 5 pour permettre l'utilisation du sucre syntaxique qu'est \emph{foreach}.
+
+Les génériques, n'en parlons même pas, il n'y qu'à voir la présence de \emph{casts} explicites et 
+d'un odieux \emph{getNodeType()} mais nous nous éloignons du sujet de ce travail pratique\dots
+
+\cprotect\subsubsection{\verb|web.xml|}
+
+Nous avons déjà vu le \verb|web.xml| à utiliser avec Jersey, mais nous devons y ajouter
+un moyen d'initialiser certains aspects d'Hibernate. Il est possible d'enregistrer
+un \emph{listener} comme ceci:
+
+\begin{xmlcode}
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" 
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                       xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+                                           http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <servlet>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>ch.eifr.lesdarons.pizzaorders.webservice.ws_resources</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Jersey Web Application</servlet-name>
+        <url-pattern>/rest/*</url-pattern>
+    </servlet-mapping>
+    <!-- ICI -->
+    <listener>
+        <listener-class>ch.eifr.lesdarons.pizzaorders ... HibernateListener</listener-class>
+    </listener>
+</web-app>
+\end{xmlcode}
+
+\cprotect\subsubsection{Initialisation d'Hibernate : Création de la \verb|SessionFactory|}
+
+Pour toute opération agissant sur la base de données, il est nécessaire de créer une session.
+Pour se faire, il faut une instance de la fabrique de sessions (\verb|SessionFactory|) qui 
+est configurée en fonction de \verb|hibernate.cfg.xml|.
+
+C'est le \emph{listener} dont nous parlions avant. Il sera invoqué au déploiement de l'application
+(et non pas à la première requête, chose souvent rencontrée dans les web applications\dots)
+
+Pour l'essentiel :
+
+\begin{javacode}
+public class HibernateListener implements ServletContextListener {
+
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        HibernateUtil.getSessionFactory();  // call static initializer
+        // populate database
+        // etc.
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        HibernateUtil.getSessionFactory().close();
+    }
+}
+\end{javacode}
+
+Vous pouvez consulter l'implémentation de la class \verb|HibernateUtil| elle ne contient rien d'intéressant
+si ce n'est un \verb|new Configuration().configure()| au milieu qui va lire le fichier de configuration
+d'Hibernate. L'objet retourné par la méthode permet alors de récupérer la \verb|SessionFactory|.
+
+Celle-ci en main il suffit d'appeler \verb|sessionFactory.openSession()| pour créer une session vers la 
+base de données.
+
+Notons l'importance de refermer la session. Les logs informent rapidement du problème en avertissant
+qu'une fuite de mémoire est probable. Il faut bien faire attention à traiter les exceptions correctement
+pour éviter le problème.
 
 \subsubsection{Requêtes HQL}
 
+La plupart du temps, Hibernate fait bien son boulot et il n'y a pas grand chose à lui dire. Par exemple:
+
+\begin{javacode}
+// Returns null if not found
+public static Pizza findPizza(Session session, String pizzaName) {
+    return (Pizza) session.load(PizzaEntity.class, pizzaName);
+}
+\end{javacode}
+
+\verb|pizzaName| doit être la clé de la table pour que ça fonctionne.
+Si par hasard nous avions un autre ID mais que nous savons que le nom de la pizza est unique, nous
+aurions pu faire
+
+\begin{javacode}
+return (Pizza) session.createCriteria(PizzaEntity.class).add(Restrictions.eq("name", pizzaName)).uniqueResult();
+\end{javacode}
+
+Dans certains scénarios plus compliqués, Hibernate est un peu perdu et on se retrouve avec des informations manquantes,
+il n'appelle pas les \emph{setters} de certaines relations. Un \emph{workaround} possible, il existe probablement
+des solutions plus élégantes :
+
+\begin{javacode}
+// Returns null if not found
+public static Order findOrder(Session session, long orderId) {
+    OrderEntity order = (OrderEntity) session.load(OrderEntity.class, orderId);
+    List list = getAssociatedPizzas(session, order.getId()).list();
+    Set<PizzaToOrderAssocEntity> associatedPizzas = new LinkedHashSet<>();
+    for (Object o : list) {
+        associatedPizzas.add((PizzaToOrderAssocEntity) o);
+    }
+    order.setPizzas(associatedPizzas);
+    Order ret = order;
+    return ret;
+}
+
+private static Query getAssociatedPizzas(Session session, long orderId) {
+    return session
+            .createQuery("from PizzaToOrderAssocEntity where assocId.order.id = :orderId")
+            .setParameter("orderId", orderId);
+}
+\end{javacode}
+
+Notons dans cette deuxième méthode la technique mise en place pour passer des paramètres et se protéger
+d'attaques XSS. On aurait aussi pu utiliser un \emph{Critère} comme mentionné plus haut.
+
+Ce langage de requêtes qui ressemble vaguement à du SQL est dénommé HQL pour, vous l'aurez deviné,
+le \emph{Hibernate Query Language}. Son utilisation peut être un avantage comme un inconvénient.
+Pour réaliser des optimisations ou requêtes très compliquées ou tirant parti de certaines spécificité
+du SGBD, il est possible d'écrire des requêtes en SQL mais c'est comme le code natif, à n'utiliser qu'en 
+dernier recours car le code est alors lié à une implémentation de SGBD particulière et cela complique
+la maintenance de l'application et la lisibilité du code.
+
+\cprotect\subsubsection{\verb|SessionFacade|}
+
+Les méthodes précédentes ne sont pas insérées dans les classes ressources du web service mais placées
+dans une classe \verb|SessionFacade| qui masque une certaine complexité du code pour l'accès aux données.
+À part les deux courtes méthodes de \verb|HibernateUtil| c'est une des seules classes à contenir du code
+spécifique à Hibernate. Pas grand chose d'ailleurs, juste \verb|Query| et \verb|Session|.
+
+\subsubsection{Clés composées}
+
+Nous avons d'un côté des pizzas et d'un autre côté les commandes avec l'adresse de livraison.
+
+Finalement, un item de la commande ce n'est rien d'autre qu'une entité affublée plus quelques informations
+comme la taille de la pizza commandée et la quantité. C'est un cas d'école du modèle entité-association
+tel qu'étudié au cours de Bases de données 1.
+
+Par-contre, du point de vue JPA, c'est un vrai casse-tête !
+
+Dans la classe \verb|Order| :
+
+\begin{javacode}
+    @MapsId("assocId")
+    @OneToMany()
+    public Set<PizzaToOrderAssocEntity> getPizzas() {
+        return pizzas;
+    }
+\end{javacode}
+
+À propos, un paramètre permet de demander un chargement \guillemets{eagerly} (soit le contraire du \emph{lazy loading})
+des pizzas, mais cela n'a pas réglé le problème mentionné à la sous-section précédente.
+
+Nous avons dû recourir à une entité d'association (\verb|PizzaToOrderAssocEntity| que nous aurions aussi
+pu appeller \verb|OrderItemEntity| par exemple)
+étant donné que nous avons ajouté deux champs qui ne font pas partie de la clé de l'association.
+Une chose que cette classe doit contenir, c'est ça :
+
+\begin{javacode}
+    @EmbeddedId
+    public PizzaToOrderAssocId getAssocId() {
+        return assocId;
+    }
+\end{javacode}
+
+Il n'y a pas d'autre champ portant l'annotation \verb|@Id|. L'\verb|EmbeddedId| est la solution
+à adopter pour les clés composées.
+
+Et enfin cette dernière classe \verb|PizzaToOrderAssocId|:
+
+\begin{javacode}
+@Embeddable
+public class PizzaToOrderAssocId implements Serializable {
+    @ManyToOne(targetEntity = OrderEntity.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
+    public Order getOrder() {
+        return order;
+    }
+
+    //@Id
+    @ManyToOne(targetEntity = PizzaEntity.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "pizza_name")
+    public Pizza getPizza() {
+        return pizza;
+    }
+}
+\end{javacode}
+
+Voilà un code non trivial qui nous a donné quelques sueurs froides.
+S'il fonctionne parfaitement et fait bien ce que l'on attend de lui, 
+le système possède un gros défaut : en utilisant la sérialisation JSON que nous avons mis en place, 
+le champ \verb|assocId| apparaîtra aux clients, ce qui n'est ni élégant ni même utile.
+
+Conclusion : Il vaut peut-être mieux laisser le framework utiliser des clés qui sont des numéros de séquence
+et imposer des contraintes sur les tables pour respecter les restrictions du modèle. Les \emph{best practices}
+voudraient pourtant que les contraintes doivent être exprimées via la structure des tables autant que possible.
+
+
+\subsubsection{Une clé qui n'est pas un numéro de séquence}
+
+Puisque nous parlons de numéros de séquence, nous avons déjà remarqué que les frameworks tels que \emph{django}
+utilisent un ID numérique à tout bout de champ. Un bon design de base de données en décourage l'usage
+dans la plupart des cas. On peut facilement, avec JPA, demander d'autres types d'identifiants pour les entités.
+
+Voyons par exemple comment définir une chaîne de caractères comme clé d'une table :
+
+\begin{javacode}
+    @Id
+    @Basic(optional = false)
+    @Column(name = "name", unique = true, nullable = false)
+    public String getName() {
+        return name;
+    }
+\end{javacode}
+
+Une chose importante à noter. Si dans le cas d'un numéro de séquence nous trouvons le code suivant :
+
+\begin{javacode}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public long getId() {
+        return id;
+    }
+\end{javacode}
+
+il est important de remarquer que dans le premier cas non seulement il faut introduire manuellement
+les contraintes garantissant l'unicité de la clé et le fait qu'elle soit non nulle, mais aussi ne pas oublier
+de toujours \guillemets{setter} une valeur, sinon, comme prévu, l'insertion d'une telle entité dans la 
+table va échouer.
+
+Petite astuce concernant l'ID auto-généré. L'auto-génération se fait au moment où l'entité est enregistrée
+dans la table. Pour mettre l'objet local représentant l'entité à jour avec le numéro de séquence attribué,
+on peut appeler \verb|session.flush()| qui aurait pour effet de mettre à jour tous les objets concernés
+par la transaction en cours.
+
 \subsubsection{Gestion des transactions}
 
-% OrderManager
+Des transactions, nous en avons une dans notre application. On aurait pu les éviter,
+mais nous trouvions intéressant d'étudier comment celles-ci pouvaient être mises en places dans un web service REST.
+Dans tous les cas, notons que SOAP est bien plus adapté dans de tels cas de figure puisque le support des transactions
+fait partie intégrante des spécifications.
+
+Une solution que l'on trouve dans la littérature pour REST consiste à suivre l'algorithme suivant, 
+ici en version simplifiée :
+
+\begin{enumerate}
+    \item Le client indique au serveur qu'il veut commencer une nouvelle transaction. Il obtient en retour
+          un identifiant pour la transaction qu'il devra utiliser ensuite. Cet identifiant devrait, dans l'idéal,
+          être transmis sous la forme de l'en-tête HTTP \verb|"Location"| puisque c'est bien cette information
+          que cette dernière décrit.
+    \item En utilisant cet identifiant de transaction et l'URL indiquée à l'étape précédente, le client
+          réalise des opérations dans la transaction.
+    \item Lorsqu'il a terminé le client peut à choix :
+    \begin{enumerate}[label=\alph*]
+        \item Annuler la transaction \emph{(rollback)}
+        \item Clore la transaction   \emph{(commit)}
+    \end{enumerate}
+\end{enumerate}
+
+Nous ne détaillerons pas ici comment nous avons géré les transactions en cours. Vous pouvez néanmoins
+consulter le code de la classe \verb|OrderManager| si cela vous intéresse.
+
+Le petit soucis à régler du point de vue du serveur est de poser un délai \emph{(timeout)} pour éviter
+de garder éternellement des transactions ni confirmées, ni annulées. Il s'agirait ensuite
+de réaliser une sorte de ramasse-miettes qui irait de temps en temps faire un \emph{rollback} des transactions
+restées inactives trop longtemps.
 
 \subsection{JSON}
 
