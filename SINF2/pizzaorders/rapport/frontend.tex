@@ -1,12 +1,35 @@
 \section{Réalisation du frontend}
+L'interface graphique devra permettre de choisir des pizzas et de passer commande au serveur.
 
 \subsection{Technologies utilisées}
 
+Pour réalisé une interface, nous avons choisi d'utiliser principalement AngularJS couplé avec les technologies standards du web.
+
 \subsection{Incompatibilité avec le backend}
+L'interface utilisateur n'est pas encore fini. Il reste des points d'amélioration comme le visuel ou encore quelques fonctionnalités présentes sur le serveur comme l'annulation de commande ou l'ajout de pizza.
 
-% Besoin de changer les par défaut
+On a aussi eu des changements à faire au niveau du code pour être compatible avec le backend.
 
-% Problème avec url encoded
-% + Autre modif dans les headers
+\subsubsection{Changer les defaults}
+
+Le but est de changer le type de contenu du header que l'on va transmettre au serveur pour être compatible, voici le code à insérer : 
+
+\begin{javascriptcode}
+\$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+\end{javascriptcode}
+
+Maintenant il faut encore rendre les requête sous le bon format avec ce code :
+\begin{javascriptcode}
+ \$http.defaults.transformRequest = function(obj) {
+        var str = [];
+        for(var p in obj)
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        return str.join("&");
+    };
+\end{javascriptcode}
+
+
+
+
 
 
