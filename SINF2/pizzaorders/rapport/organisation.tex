@@ -1,31 +1,29 @@
 \section{Organisation}
 
-Cette section décrit la manière dont nous nous sommes organisation pour mener à bien ce projet.
+Cette section décrit la manière dont nous nous sommes organisés pour mener à bien ce projet.
 
 \subsection{Répartition des tâches}
 
 \begin{tabular}{|l|p{7cm}|l|}
 \hline
-Personne & Tâches \\
-\hline
 
 Piller Bryan & 
 \begin{itemize}
-  \item Conception du projet
+  \item Parties architecture et conception du projet
   \item Création des beans
 \end{itemize}\\
 \hline
 
 Mathieu Clément & 
 \begin{itemize}
-  \item Implémentation Backend
+  \item Implémentation du backend
   \item Configuration Maven   
 \end{itemize}\\
 \hline
 
 Les deux &
 \begin{itemize}
-  \item Implémentation frontend
+  \item Implémentation du frontend
   \item Rédaction du rapport
 \end{itemize}\\
 \hline
@@ -34,10 +32,25 @@ Les deux &
 
 \subsection{Environnement de développement}
 \begin{itemize}
-\item Git - BickBucket
-\item Eclipse et IntelliJ
-\item Google Chrome
-\item Postman - Rest Client
+\item IntelliJ IDEA
+\item Eclipse
+\item Git
+\item GNU/Linux
+\item Tomcat
+\item Hibernate H2 in-memory database
+\item Chromium Developer Tools
+\item Extension de navigateur Postman (REST Client)
 \end{itemize}
+
+\subsection{Déploiement de \guillemets{production}}
+
+Vous pouvez trouver respectivement le web service et le frontend aux adresses suivantes :
+
+\url{http://langid.tic.eia-fr.ch:8080/pizzaorders-ws/rest/application.wadl}
+
+\url{http://langid.tic.eia-fr.ch:8080/pizzaorders-frontend}
+
+Note: par manque de temps nous avons préféré nous concentrer sur la partie backend, c'est pourquoi 
+le frontend est si simple et son design est si ravageur.
 
 \input{maven}

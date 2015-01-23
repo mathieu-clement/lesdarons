@@ -11,6 +11,7 @@
 
     <groupId>ch.eifr.lesdarons.pizzaorders</groupId>
     <artifactId>pizzaorders-frontend</artifactId>
+    <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,7 +50,7 @@
                 <configuration>
                     <path>/pizzaorders-frontend</path>
                     <update>true</update>
-                    <url>http://localhost:8080/manager/text</url>
+                    <url>http://langid.tic.eia-fr.ch:8080/manager/text</url>
                     <!--
                     In Tomcat7 installation directory, add this to conf/tomcat-users.xml:
 

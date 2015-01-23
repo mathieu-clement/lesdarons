@@ -18,11 +18,15 @@
 \usepackage{footnote}
 \makesavenoteenv{tabular}
 
-\usepackage{wasysym}
+%\usepackage{wasysym}
+
+\usepackage{enumitem}
 
 \usepackage[frenchb]{babel}
 
 \usepackage{textpos}
+
+\usepackage{cleveref}
 
 % basé sur s09
 
@@ -31,7 +35,7 @@
 
 \eiasetupmeta[
     course=Systèmes d'information 2,  % also change after \begin{document} !!!
-    tpno=TP12, % also change after \begin{document} !!!
+    tpno=TP 12, % also change after \begin{document} !!!
     author=Mathieu Cl\'ement, 
     authortwo=Bryan Piller, 
     class=TIC / I-3,
@@ -43,17 +47,18 @@
 \eiasetuphdr
 
 \usepackage{minted}
-\usemintedstyle{colorful} %colorful, pastie, friendly are nice
+\usemintedstyle{pastie} %colorful, pastie, friendly are nice
 \newminted{prolog}{fontsize=\footnotesize}
 \newminted{java}{fontsize=\footnotesize}
 \newminted{html}{fontsize=\footnotesize}
 \newminted{xml}{fontsize=\footnotesize}
+\newminted{json}{fontsize=\footnotesize}
 \newminted{sql}{fontsize=\footnotesize}
 \newminted{javascript}{fontsize=\footnotesize}
 
 \newcommand\bellecitation[1]{\qquad\qquad \makebox{\emph{\guillemets{#1}}}}
 
-\newcommand\bigsmile{{\LARGE\smiley{}}}
+%\newcommand\bigsmile{{\LARGE\smiley{}}}
 
 \usepackage{amssymb}% http://ctan.org/pkg/amssymb
 \usepackage{pifont}% http://ctan.org/pkg/pifont
@@ -67,12 +72,16 @@
    \prevdepth=\tpd}
 
 \begin{document}
-\chead{SINF2 -- TP12}
-\eiafullpagetitle{} % use *fat* ribbon for very long titles
+%\chead{SINF2 -- TP 12}
+\chead{}
+\lhead{\leftmark}
+\rhead{\rightmark}
+\eiafullpagetitlewithtocandribbon{} % use *fat* ribbon for very long titles
 
-\cleardoublepage % First page of text must be on the right
+%\cleardoublepage % First page of text must be on the right
 
-\tableofcontents
+%\tableofcontents
+%\thispagestyle{empty}
 
 \cleardoublepage
 
@@ -84,9 +93,9 @@
 
 \input{frontend}
 
-\input{validation}
+%\input{validation}
 
-\input{production}
+%\input{production}
 
 \input{organisation}
 
